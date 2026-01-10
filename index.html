@@ -1,1 +1,40 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>3D Koła Zębate — interaktywne</title>
+  <link rel="stylesheet" href="styles/style.css">
+</head>
+<body>
+  <div id="app">
+    <aside id="sidebar">
+      <h1>Statystyki</h1>
+      <div id="stats"></div>
+      <hr/>
+      <div id="controls-info">
+        <h2>Sterowanie</h2>
+        <ul>
+          <li>Scroll — zoom</li>
+          <li>LPM (przytrzymaj i przeciągnij) — przesuwanie sceny (scena porusza się pod kamerą)</li>
+          <li>ŚPM (przytrzymaj środkowy przycisk) — przesuwanie sceny (alternatywa)</li>
+          <li>PPM (przytrzymaj prawy przycisk) nad kołem — obracanie tego koła</li>
+          <li>Kropka na kole wskazuje obrót koła</li>
+        </ul>
+      </div>
+      <hr/>
+      <div id="notes">
+        <strong>Uwaga:</strong>
+        <p>Program zaczyna z 3 kołami zębatymi o różnych rozmiarach. Zmiany w programie: tylko dodawać nowe rzeczy — nie kasować istniejących.</p>
+      </div>
+    </aside>
 
+    <main id="canvas-wrap">
+      <canvas id="glcanvas"></canvas>
+    </main>
+  </div>
+
+  <!-- three.js z CDN -->
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
