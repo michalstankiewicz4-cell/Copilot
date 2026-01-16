@@ -456,9 +456,12 @@ function updatePricing() {
     // Calculate prompt cost
     const promptCost = PRICING.totalPrompts * PRICING.promptRate;
     
+    // Calculate average memory cost per active module
+    const avgMemoryPerModule = activeModuleCount > 0 ? (totalMemory / activeModuleCount).toFixed(2) : 0;
+    
     // Update summary
     document.getElementById('moduleCost').textContent = `${activeModuleCount}/${totalModules} - ${totalModuleCost} EUR`;
-    document.getElementById('memorySize').textContent = `${totalMemory.toFixed(1)} KB`;
+    document.getElementById('memorySize').textContent = `${avgMemoryPerModule} KB/mod - ${totalMemory.toFixed(1)} KB`;
     document.getElementById('workTime').textContent = `${timeCost} EUR (${hours.toFixed(2)}h × ${PRICING.hourlyRate} EUR/h)`;
     document.getElementById('promptCost').textContent = `${promptCost.toFixed(2)} EUR (${PRICING.totalPrompts} × ${PRICING.promptRate} EUR)`;
     document.getElementById('totalCost').textContent = `${totalModuleCost + timeCost + promptCost} EUR`;
