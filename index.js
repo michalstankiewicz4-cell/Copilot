@@ -17,7 +17,7 @@ const PRICING = {
         physics: { name: 'Physics Engine', price: 163, memory: 3.5, mandatory: true }
     },
     hourlyRate: 35, // EUR per hour (150 PLN / 4.30)
-    promptRate: 0.035, // EUR per prompt (0.15 PLN / 4.30)
+    promptRate: 0.25, // EUR per prompt (increased from 0.035)
     totalPrompts: 25 // Updated manually when requested
 };
 
