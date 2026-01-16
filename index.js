@@ -1,23 +1,23 @@
 // Game Configuration and Pricing
 const PRICING = {
     modules: {
-        keyboardControl: { name: 'Keyboard Control', price: 500, memory: 2 },
-        mouseControl: { name: 'Mouse Control', price: 400, memory: 1.5 },
-        autofollow: { name: 'Autofollow Mouse', price: 400, memory: 1.5 },
-        graphics: { name: 'HD Graphics', price: 1500, memory: 8 },
-        colorMode: { name: 'Color Mode', price: 900, memory: 3 },
-        animations: { name: 'Smooth Animations', price: 800, memory: 3 },
-        sounds: { name: 'Sound System', price: 600, memory: 2.5 },
-        particles: { name: 'Particle Effects', price: 1200, memory: 4 },
-        tips: { name: 'Tips Display', price: 350, memory: 1 },
-        debugConsole: { name: 'Debug Console', price: 300, memory: 0.8 },
-        healthBar: { name: 'Health Bar', price: 450, memory: 1.5 },
-        gameEngine: { name: 'Game Engine (core)', price: 2000, memory: 10, mandatory: true },
-        rendering: { name: 'Rendering System', price: 1000, memory: 5, mandatory: true },
-        physics: { name: 'Physics Engine', price: 700, memory: 3.5, mandatory: true }
+        keyboardControl: { name: 'Keyboard Control', price: 116, memory: 2 },
+        mouseControl: { name: 'Mouse Control', price: 93, memory: 1.5 },
+        autofollow: { name: 'Autofollow Mouse', price: 93, memory: 1.5 },
+        graphics: { name: 'HD Graphics', price: 349, memory: 8 },
+        colorMode: { name: 'Color Mode', price: 209, memory: 3 },
+        animations: { name: 'Smooth Animations', price: 186, memory: 3 },
+        sounds: { name: 'Sound System', price: 140, memory: 2.5 },
+        particles: { name: 'Particle Effects', price: 279, memory: 4 },
+        tips: { name: 'Tips Display', price: 81, memory: 1 },
+        debugConsole: { name: 'Debug Console', price: 70, memory: 0.8 },
+        healthBar: { name: 'Health Bar', price: 105, memory: 1.5 },
+        gameEngine: { name: 'Game Engine (core)', price: 465, memory: 10, mandatory: true },
+        rendering: { name: 'Rendering System', price: 233, memory: 5, mandatory: true },
+        physics: { name: 'Physics Engine', price: 163, memory: 3.5, mandatory: true }
     },
-    hourlyRate: 150, // PLN per hour
-    promptRate: 0.15, // PLN per prompt
+    hourlyRate: 35, // EUR per hour (150 PLN / 4.30)
+    promptRate: 0.035, // EUR per prompt (0.15 PLN / 4.30)
     totalPrompts: 25 // Updated manually when requested
 };
 
@@ -435,7 +435,7 @@ function updatePricing() {
         item.innerHTML = `
             <div class="pricing-item-header">
                 <span class="${status}">${statusText} ${module.name}</span>
-                <span class="${status}">${module.price} PLN</span>
+                <span class="${status}">${module.price} EUR</span>
             </div>
             <div class="pricing-item-detail">
                 Memory: ${module.memory} KB ${isMandatory ? '(required)' : ''}
@@ -454,11 +454,11 @@ function updatePricing() {
     const promptCost = PRICING.totalPrompts * PRICING.promptRate;
     
     // Update summary
-    document.getElementById('moduleCost').textContent = `${totalModuleCost} PLN`;
+    document.getElementById('moduleCost').textContent = `${totalModuleCost} EUR`;
     document.getElementById('memorySize').textContent = `${totalMemory.toFixed(1)} KB`;
-    document.getElementById('workTime').textContent = `${timeCost} PLN (${hours.toFixed(2)}h × ${PRICING.hourlyRate} PLN/h)`;
-    document.getElementById('promptCost').textContent = `${promptCost.toFixed(2)} PLN (${PRICING.totalPrompts} × ${PRICING.promptRate} PLN)`;
-    document.getElementById('totalCost').textContent = `${totalModuleCost + timeCost + promptCost} PLN`;
+    document.getElementById('workTime').textContent = `${timeCost} EUR (${hours.toFixed(2)}h × ${PRICING.hourlyRate} EUR/h)`;
+    document.getElementById('promptCost').textContent = `${promptCost.toFixed(2)} EUR (${PRICING.totalPrompts} × ${PRICING.promptRate} EUR)`;
+    document.getElementById('totalCost').textContent = `${totalModuleCost + timeCost + promptCost} EUR`;
 }
 
 // Start game when page loads
