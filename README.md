@@ -1,3 +1,4 @@
+# Readme is outdated / readme jest przeterminowane :)
 # Copilot - Game with Pricing System
 
 Interactive game with real-time dynamic pricing system.
