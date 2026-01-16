@@ -39,7 +39,7 @@ const gameState = {
         sounds: true,
         particles: true
     },
-    startTime: Date.now(),
+    startTime: new Date('2026-01-16T15:00:00').getTime(),
     animationFrame: null
 };
 
