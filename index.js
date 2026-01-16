@@ -415,6 +415,8 @@ function updatePricing() {
     
     let totalModuleCost = 0;
     let totalMemory = 0;
+    let activeModuleCount = 0;
+    const totalModules = Object.keys(PRICING.modules).length;
     
     // Add all modules to pricing
     Object.entries(PRICING.modules).forEach(([key, module]) => {
@@ -424,6 +426,7 @@ function updatePricing() {
         if (isActive || isMandatory) {
             totalModuleCost += module.price;
             totalMemory += module.memory;
+            activeModuleCount++;
         }
         
         const item = document.createElement('div');
@@ -454,7 +457,7 @@ function updatePricing() {
     const promptCost = PRICING.totalPrompts * PRICING.promptRate;
     
     // Update summary
-    document.getElementById('moduleCost').textContent = `${totalModuleCost} EUR`;
+    document.getElementById('moduleCost').textContent = `${activeModuleCount}/${totalModules} - ${totalModuleCost} EUR`;
     document.getElementById('memorySize').textContent = `${totalMemory.toFixed(1)} KB`;
     document.getElementById('workTime').textContent = `${timeCost} EUR (${hours.toFixed(2)}h × ${PRICING.hourlyRate} EUR/h)`;
     document.getElementById('promptCost').textContent = `${promptCost.toFixed(2)} EUR (${PRICING.totalPrompts} × ${PRICING.promptRate} EUR)`;
