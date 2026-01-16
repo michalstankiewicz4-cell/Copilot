@@ -3,6 +3,7 @@ const PRICING = {
     modules: {
         keyboardControl: { name: 'Keyboard Control', price: 500, memory: 2 },
         mouseControl: { name: 'Mouse Control', price: 400, memory: 1.5 },
+        autofollow: { name: 'Autofollow Mouse', price: 400, memory: 1.5 },
         graphics: { name: 'HD Graphics', price: 1500, memory: 8 },
         colorMode: { name: 'Color Mode', price: 900, memory: 3 },
         animations: { name: 'Smooth Animations', price: 800, memory: 3 },
@@ -40,6 +41,7 @@ const gameState = {
     features: {
         keyboardControl: true,
         mouseControl: true,
+        autofollow: false,
         graphics: true,
         colorMode: true,
         animations: true,
@@ -139,8 +141,19 @@ function updatePlayer() {
         }
     }
     
-    // Mouse control - move to clicked position
-    if (gameState.features.mouseControl && gameState.mouseClicked) {
+    // Autofollow mouse - continuously follow cursor
+    if (gameState.features.autofollow && (gameState.mouseX > 0 || gameState.mouseY > 0)) {
+        const dx = gameState.mouseX - gameState.player.x;
+        const dy = gameState.mouseY - gameState.player.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (distance > 5) {
+            gameState.player.velocityX = (dx / distance) * gameState.player.speed * 0.1;
+            gameState.player.velocityY = (dy / distance) * gameState.player.speed * 0.1;
+        }
+    }
+    // Mouse control - move to clicked position (only if autofollow is disabled)
+    else if (gameState.features.mouseControl && gameState.mouseClicked) {
         const dx = gameState.mouseX - gameState.player.x;
         const dy = gameState.mouseY - gameState.player.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
@@ -318,7 +331,9 @@ function render() {
         if (gameState.features.keyboardControl) {
             ctx.fillText('Arrows: ← → ↑ ↓', 10, 40);
         }
-        if (gameState.features.mouseControl) {
+        if (gameState.features.autofollow) {
+            ctx.fillText('Mouse: follows cursor', 10, 60);
+        } else if (gameState.features.mouseControl) {
             ctx.fillText('Mouse: click to move', 10, 60);
         }
     }
