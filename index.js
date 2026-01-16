@@ -479,14 +479,15 @@ function updatePricing() {
     // Calculate prompt cost
     const promptCost = PRICING.totalPrompts * PRICING.promptRate;
     
-    // Calculate fun time cost (from page load)
+    // Calculate energy cost (from project start - 15:00)
+    const energyElapsed = Date.now() - gameState.startTime;
+    const energyMinutes = energyElapsed / 60000;
+    const energyCost = energyMinutes * PRICING.energyRate;
+    
+    // Calculate fun time cost (from page load - when user started playing)
     const funElapsed = Date.now() - gameState.funStartTime;
     const funMinutes = funElapsed / 60000;
     const funTimeCost = funMinutes * PRICING.funTimeRate;
-    
-    // Calculate energy cost (from page load)
-    const energyMinutes = funElapsed / 60000; // same as fun time
-    const energyCost = energyMinutes * PRICING.energyRate;
     
     // Calculate average memory cost per active module
     const avgMemoryPerModule = activeModuleCount > 0 ? (totalMemory / activeModuleCount).toFixed(2) : 0;
@@ -506,8 +507,8 @@ function updatePricing() {
     document.getElementById('moduleCost').textContent = `${activeModuleCount}/${totalModules} - ${totalModuleCost.toFixed(2)} EUR`;
     document.getElementById('workTime').textContent = `(${hours.toFixed(2)}h × ${PRICING.hourlyRate} EUR/h) ${timeCost.toFixed(2)} EUR`;
     document.getElementById('promptCost').textContent = `(${PRICING.totalPrompts} × ${PRICING.promptRate} EUR) ${promptCost.toFixed(2)} EUR`;
-    document.getElementById('funTime').textContent = `(${funMinutes.toFixed(2)}min × ${PRICING.funTimeRate} EUR/min) ${funTimeCost.toFixed(2)} EUR`;
     document.getElementById('energyCost').textContent = `(${energyMinutes.toFixed(2)}min × ${PRICING.energyRate} EUR/min) ${energyCost.toFixed(2)} EUR`;
+    document.getElementById('funTime').textContent = `(${funMinutes.toFixed(2)}min × ${PRICING.funTimeRate} EUR/min) ${funTimeCost.toFixed(2)} EUR`;
     document.getElementById('marginCost').textContent = `${marginCost.toFixed(2)} EUR`;
     document.getElementById('totalCost').textContent = `${finalTotal.toFixed(2)} EUR`;
 }
