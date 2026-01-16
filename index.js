@@ -88,8 +88,8 @@ function init() {
     // Reset button
     document.getElementById('resetBtn').addEventListener('click', resetGame);
     
-    // Start timer
-    setInterval(updateTimer, 1000);
+    // Start timer - update every 100ms for smooth price growth
+    setInterval(updateTimer, 100);
     
     // Start game loop
     updatePricing();
@@ -451,7 +451,7 @@ function updatePricing() {
     // Calculate time cost
     const elapsed = Date.now() - gameState.startTime;
     const hours = elapsed / 3600000;
-    const timeCost = Math.round(hours * PRICING.hourlyRate);
+    const timeCost = hours * PRICING.hourlyRate; // Remove Math.round for precise display
     
     // Calculate prompt cost
     const promptCost = PRICING.totalPrompts * PRICING.promptRate;
@@ -462,9 +462,9 @@ function updatePricing() {
     // Update summary
     document.getElementById('memorySize').textContent = `${avgMemoryPerModule} KB/mod - ${totalMemory.toFixed(1)} KB`;
     document.getElementById('moduleCost').textContent = `${activeModuleCount}/${totalModules} - ${totalModuleCost} EUR`;
-    document.getElementById('workTime').textContent = `(${hours.toFixed(2)}h × ${PRICING.hourlyRate} EUR/h) ${timeCost} EUR`;
+    document.getElementById('workTime').textContent = `(${hours.toFixed(4)}h × ${PRICING.hourlyRate} EUR/h) ${timeCost.toFixed(2)} EUR`;
     document.getElementById('promptCost').textContent = `(${PRICING.totalPrompts} × ${PRICING.promptRate} EUR) ${promptCost.toFixed(2)} EUR`;
-    document.getElementById('totalCost').textContent = `${totalModuleCost + timeCost + promptCost} EUR`;
+    document.getElementById('totalCost').textContent = `${(totalModuleCost + timeCost + promptCost).toFixed(2)} EUR`;
 }
 
 // Start game when page loads
