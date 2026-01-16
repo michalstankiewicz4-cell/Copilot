@@ -16,7 +16,9 @@ const PRICING = {
         rendering: { name: 'Rendering System', price: 1000, memory: 5, mandatory: true },
         physics: { name: 'Physics Engine', price: 700, memory: 3.5, mandatory: true }
     },
-    hourlyRate: 150 // PLN per hour
+    hourlyRate: 150, // PLN per hour
+    promptRate: 0.15, // PLN per prompt
+    totalPrompts: 25 // Updated manually when requested
 };
 
 // Game State
@@ -448,11 +450,15 @@ function updatePricing() {
     const hours = elapsed / 3600000;
     const timeCost = Math.round(hours * PRICING.hourlyRate);
     
+    // Calculate prompt cost
+    const promptCost = PRICING.totalPrompts * PRICING.promptRate;
+    
     // Update summary
     document.getElementById('moduleCost').textContent = `${totalModuleCost} PLN`;
     document.getElementById('memorySize').textContent = `${totalMemory.toFixed(1)} KB`;
     document.getElementById('workTime').textContent = `${timeCost} PLN (${hours.toFixed(2)}h × ${PRICING.hourlyRate} PLN/h)`;
-    document.getElementById('totalCost').textContent = `${totalModuleCost + timeCost} PLN`;
+    document.getElementById('promptCost').textContent = `${promptCost.toFixed(2)} PLN (${PRICING.totalPrompts} × ${PRICING.promptRate} PLN)`;
+    document.getElementById('totalCost').textContent = `${totalModuleCost + timeCost + promptCost} PLN`;
 }
 
 // Start game when page loads
