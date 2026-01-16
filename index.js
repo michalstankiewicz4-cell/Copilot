@@ -4,6 +4,7 @@ const PRICING = {
         keyboardControl: { name: 'Sterowanie strzałkami', price: 500, memory: 2 },
         mouseControl: { name: 'Sterowanie myszką', price: 400, memory: 1.5 },
         graphics: { name: 'Grafika HD', price: 1500, memory: 8 },
+        colorMode: { name: 'Tryb kolorowy', price: 900, memory: 3 },
         animations: { name: 'Animacje płynne', price: 800, memory: 3 },
         sounds: { name: 'System dźwięków', price: 600, memory: 2.5 },
         particles: { name: 'Efekty cząsteczkowe', price: 1200, memory: 4 },
@@ -36,6 +37,7 @@ const gameState = {
         keyboardControl: true,
         mouseControl: true,
         graphics: true,
+        colorMode: true,
         animations: true,
         sounds: true,
         particles: true
@@ -163,11 +165,15 @@ function updatePlayer() {
 }
 
 function createParticle() {
+    const particleColor = gameState.features.colorMode 
+        ? `hsl(${Math.random() * 60 + 90}, 70%, 60%)` 
+        : `hsl(0, 0%, ${Math.random() * 30 + 60}%)`;
+    
     gameState.particles.push({
         x: gameState.player.x + (Math.random() - 0.5) * 10,
         y: gameState.player.y + (Math.random() - 0.5) * 10,
         radius: Math.random() * 3 + 1,
-        color: `hsl(${Math.random() * 60 + 90}, 70%, 60%)`,
+        color: particleColor,
         velocityX: (Math.random() - 0.5) * 2,
         velocityY: (Math.random() - 0.5) * 2,
         life: 1
@@ -235,12 +241,19 @@ function render() {
     // Draw player
     if (gameState.features.graphics) {
         // Draw glow effect
+        const glowColor = gameState.features.colorMode 
+            ? 'rgba(76, 175, 80, 0.8)' 
+            : 'rgba(200, 200, 200, 0.8)';
+        const glowColorEnd = gameState.features.colorMode 
+            ? 'rgba(76, 175, 80, 0)' 
+            : 'rgba(200, 200, 200, 0)';
+        
         const gradient = ctx.createRadialGradient(
             gameState.player.x, gameState.player.y, 0,
             gameState.player.x, gameState.player.y, gameState.player.radius * 2
         );
-        gradient.addColorStop(0, 'rgba(76, 175, 80, 0.8)');
-        gradient.addColorStop(1, 'rgba(76, 175, 80, 0)');
+        gradient.addColorStop(0, glowColor);
+        gradient.addColorStop(1, glowColorEnd);
         
         ctx.fillStyle = gradient;
         ctx.beginPath();
@@ -249,13 +262,13 @@ function render() {
     }
     
     // Draw main player circle
-    ctx.fillStyle = gameState.player.color;
+    ctx.fillStyle = gameState.features.colorMode ? gameState.player.color : '#CCCCCC';
     ctx.beginPath();
     ctx.arc(gameState.player.x, gameState.player.y, gameState.player.radius, 0, Math.PI * 2);
     ctx.fill();
     
     if (gameState.features.graphics) {
-        ctx.strokeStyle = '#8FFF8F';
+        ctx.strokeStyle = gameState.features.colorMode ? '#8FFF8F' : '#FFFFFF';
         ctx.lineWidth = 2;
         ctx.stroke();
     }
