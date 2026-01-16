@@ -18,7 +18,7 @@ const PRICING = {
     },
     hourlyRate: 35, // EUR per hour (150 PLN / 4.30)
     promptRate: 0.25, // EUR per prompt (increased from 0.035)
-    totalPrompts: 25 // Updated manually when requested
+    totalPrompts: 26 // Updated: added this prompt about AI prompts price change
 };
 
 // Game State
