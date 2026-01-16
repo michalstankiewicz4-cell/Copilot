@@ -460,10 +460,10 @@ function updatePricing() {
     const avgMemoryPerModule = activeModuleCount > 0 ? (totalMemory / activeModuleCount).toFixed(2) : 0;
     
     // Update summary
-    document.getElementById('moduleCost').textContent = `${activeModuleCount}/${totalModules} - ${totalModuleCost} EUR`;
     document.getElementById('memorySize').textContent = `${avgMemoryPerModule} KB/mod - ${totalMemory.toFixed(1)} KB`;
-    document.getElementById('workTime').textContent = `${timeCost} EUR (${hours.toFixed(2)}h × ${PRICING.hourlyRate} EUR/h)`;
-    document.getElementById('promptCost').textContent = `${promptCost.toFixed(2)} EUR (${PRICING.totalPrompts} × ${PRICING.promptRate} EUR)`;
+    document.getElementById('moduleCost').textContent = `${activeModuleCount}/${totalModules} - ${totalModuleCost} EUR`;
+    document.getElementById('workTime').textContent = `(${hours.toFixed(2)}h × ${PRICING.hourlyRate} EUR/h) ${timeCost} EUR`;
+    document.getElementById('promptCost').textContent = `(${PRICING.totalPrompts} × ${PRICING.promptRate} EUR) ${promptCost.toFixed(2)} EUR`;
     document.getElementById('totalCost').textContent = `${totalModuleCost + timeCost + promptCost} EUR`;
 }
 
