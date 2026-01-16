@@ -132,25 +132,25 @@ function handleMouseClick(e) {
 function updatePlayer() {
     // Check if keyboard is actively being used
     const keyboardActive = gameState.features.keyboardControl && (
-        gameState.keys['ArrowUp'] || gameState.keys['w'] ||
-        gameState.keys['ArrowDown'] || gameState.keys['s'] ||
-        gameState.keys['ArrowLeft'] || gameState.keys['a'] ||
-        gameState.keys['ArrowRight'] || gameState.keys['d']
+        gameState.keys['ArrowUp'] ||
+        gameState.keys['ArrowDown'] ||
+        gameState.keys['ArrowLeft'] ||
+        gameState.keys['ArrowRight']
     );
     
     // Keyboard control (highest priority)
     if (gameState.features.keyboardControl) {
-        if (gameState.keys['ArrowUp'] || gameState.keys['w']) {
+        if (gameState.keys['ArrowUp']) {
             gameState.player.velocityY = -gameState.player.speed;
-        } else if (gameState.keys['ArrowDown'] || gameState.keys['s']) {
+        } else if (gameState.keys['ArrowDown']) {
             gameState.player.velocityY = gameState.player.speed;
         } else if (!keyboardActive) {
             gameState.player.velocityY = 0;
         }
         
-        if (gameState.keys['ArrowLeft'] || gameState.keys['a']) {
+        if (gameState.keys['ArrowLeft']) {
             gameState.player.velocityX = -gameState.player.speed;
-        } else if (gameState.keys['ArrowRight'] || gameState.keys['d']) {
+        } else if (gameState.keys['ArrowRight']) {
             gameState.player.velocityX = gameState.player.speed;
         } else if (!keyboardActive) {
             gameState.player.velocityX = 0;
