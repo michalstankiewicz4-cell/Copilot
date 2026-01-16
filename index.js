@@ -60,6 +60,7 @@ const gameState = {
     gameStartTime: null, // When game actually starts (RESTART pressed)
     gameRunning: false,
     lastUpdateTime: null,
+    costUpdateInterval: null, // Interval for updating cost overlay
     startTime: new Date('2026-01-16T15:00:00').getTime(),
     animationFrame: null
 };
@@ -544,12 +545,51 @@ function showCostSummary() {
         return;
     }
     
+    const overlay = document.getElementById('costOverlay');
+    
+    // Toggle visibility
+    if (overlay.classList.contains('visible')) {
+        closeCostOverlay();
+        return;
+    }
+    
+    overlay.classList.add('visible');
+    
+    // Start live update
+    if (gameState.costUpdateInterval) {
+        clearInterval(gameState.costUpdateInterval);
+    }
+    
+    gameState.costUpdateInterval = setInterval(updateCostOverlay, 100);
+    updateCostOverlay(); // Initial update
+}
+
+function closeCostOverlay() {
+    const overlay = document.getElementById('costOverlay');
+    overlay.classList.remove('visible');
+    
+    if (gameState.costUpdateInterval) {
+        clearInterval(gameState.costUpdateInterval);
+        gameState.costUpdateInterval = null;
+    }
+}
+
+function updateCostOverlay() {
+    if (!gameState.gameRunning) return;
+    
     const gameTimeSeconds = (Date.now() - gameState.gameStartTime) / 1000;
     const gameTimeMinutes = gameTimeSeconds / 60;
     
-    let summary = '=== CURRENT GAME COST ===\n\n';
-    summary += `Game Time: ${Math.floor(gameTimeMinutes)}m ${Math.floor(gameTimeSeconds % 60)}s\n\n`;
-    summary += 'MODULE COSTS (time-based):\n';
+    let html = '';
+    
+    // Game time
+    html += `<div class="overlay-section">`;
+    html += `<div class="overlay-section-title">Game Time: ${Math.floor(gameTimeMinutes)}m ${Math.floor(gameTimeSeconds % 60)}s</div>`;
+    html += `</div>`;
+    
+    // Module costs
+    html += `<div class="overlay-section">`;
+    html += `<div class="overlay-section-title">MODULE COSTS (time-based):</div>`;
     
     let moduleCost = 0;
     Object.entries(PRICING.modules).forEach(([key, module]) => {
@@ -559,23 +599,34 @@ function showCostSummary() {
         moduleCost += cost;
         
         if (timeUsed > 0) {
-            summary += `${module.name}: ${timeUsed.toFixed(1)}s (${(percentUsed * 100).toFixed(0)}%) = ${cost.toFixed(2)} EUR\n`;
+            html += `<div class="overlay-item">`;
+            html += `<span>${module.name}: ${timeUsed.toFixed(1)}s (${(percentUsed * 100).toFixed(0)}%)</span>`;
+            html += `<span>${cost.toFixed(2)} EUR</span>`;
+            html += `</div>`;
         }
     });
+    html += `</div>`;
     
+    // Other costs
     const workTimeCost = (gameTimeMinutes / 60) * PRICING.hourlyRate;
     const promptCost = PRICING.totalPrompts * PRICING.promptRate;
     const subtotal = moduleCost + workTimeCost + promptCost;
     const marginCost = subtotal * 0.10;
     const total = subtotal + marginCost;
     
-    summary += `\nWork Time: ${(gameTimeMinutes / 60).toFixed(4)}h × ${PRICING.hourlyRate} EUR/h = ${workTimeCost.toFixed(2)} EUR\n`;
-    summary += `AI Prompts: ${PRICING.totalPrompts} × ${PRICING.promptRate} EUR = ${promptCost.toFixed(2)} EUR\n`;
-    summary += `\nSubtotal: ${subtotal.toFixed(2)} EUR\n`;
-    summary += `Margin (10%): ${marginCost.toFixed(2)} EUR\n`;
-    summary += `\n=== TOTAL: ${total.toFixed(2)} EUR ===`;
+    html += `<div class="overlay-section">`;
+    html += `<div class="overlay-item"><span>Work Time: ${(gameTimeMinutes / 60).toFixed(4)}h × ${PRICING.hourlyRate} EUR/h</span><span>${workTimeCost.toFixed(2)} EUR</span></div>`;
+    html += `<div class="overlay-item"><span>AI Prompts: ${PRICING.totalPrompts} × ${PRICING.promptRate} EUR</span><span>${promptCost.toFixed(2)} EUR</span></div>`;
+    html += `</div>`;
     
-    alert(summary);
+    html += `<div class="overlay-section">`;
+    html += `<div class="overlay-item"><span>Subtotal:</span><span>${subtotal.toFixed(2)} EUR</span></div>`;
+    html += `<div class="overlay-item"><span>Margin (10%):</span><span>${marginCost.toFixed(2)} EUR</span></div>`;
+    html += `</div>`;
+    
+    html += `<div class="overlay-total">TOTAL: ${total.toFixed(2)} EUR</div>`;
+    
+    document.getElementById('costOverlayContent').innerHTML = html;
 }
 
 // Start game when page loads

@@ -181,6 +181,87 @@
             font-weight: bold;
             color: #FFD700;
         }
+
+        /* Cost Summary Overlay */
+        #costOverlay {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            border: 3px solid #4CAF50;
+            border-radius: 10px;
+            padding: 20px;
+            width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            z-index: 1000;
+            color: white;
+            font-family: 'Courier New', monospace;
+        }
+
+        #costOverlay.visible {
+            display: block;
+        }
+
+        .overlay-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #4CAF50;
+        }
+
+        .overlay-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .overlay-close {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .overlay-close:hover {
+            background: #d32f2f;
+        }
+
+        .overlay-section {
+            margin-bottom: 15px;
+        }
+
+        .overlay-section-title {
+            color: #FFD700;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .overlay-item {
+            font-size: 11px;
+            margin: 3px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .overlay-total {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid #4CAF50;
+            font-size: 16px;
+            font-weight: bold;
+            color: #8FFF8F;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -322,6 +403,15 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Cost Summary Overlay -->
+    <div id="costOverlay">
+        <div class="overlay-header">
+            <div class="overlay-title">CURRENT GAME COST</div>
+            <button class="overlay-close" onclick="closeCostOverlay()">✕ CLOSE</button>
+        </div>
+        <div id="costOverlayContent"></div>
     </div>
 
     <script src="index.js"></script>
