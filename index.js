@@ -18,7 +18,8 @@ const PRICING = {
     },
     hourlyRate: 35, // EUR per hour (150 PLN / 4.30)
     promptRate: 0.25, // EUR per prompt (increased from 0.035)
-    funTimeRate: 0.001, // EUR per minute - realistic electricity cost (~0.1 cent/min)
+    funTimeRate: 0.10, // EUR per minute - just for playing the game!
+    energyRate: 0.10, // EUR per minute - "electricity" cost
     totalPrompts: 26 // Updated: added this prompt about AI prompts price change
 };
 
@@ -483,11 +484,15 @@ function updatePricing() {
     const funMinutes = funElapsed / 60000;
     const funTimeCost = funMinutes * PRICING.funTimeRate;
     
+    // Calculate energy cost (from page load)
+    const energyMinutes = funElapsed / 60000; // same as fun time
+    const energyCost = energyMinutes * PRICING.energyRate;
+    
     // Calculate average memory cost per active module
     const avgMemoryPerModule = activeModuleCount > 0 ? (totalMemory / activeModuleCount).toFixed(2) : 0;
     
     // Calculate subtotal (before margin)
-    const subtotal = totalModuleCost + timeCost + promptCost + funTimeCost;
+    const subtotal = totalModuleCost + timeCost + promptCost + funTimeCost + energyCost;
     
     // Calculate margin (10% of subtotal)
     const marginRate = 0.10;
@@ -502,6 +507,7 @@ function updatePricing() {
     document.getElementById('workTime').textContent = `(${hours.toFixed(2)}h × ${PRICING.hourlyRate} EUR/h) ${timeCost.toFixed(2)} EUR`;
     document.getElementById('promptCost').textContent = `(${PRICING.totalPrompts} × ${PRICING.promptRate} EUR) ${promptCost.toFixed(2)} EUR`;
     document.getElementById('funTime').textContent = `(${funMinutes.toFixed(2)}min × ${PRICING.funTimeRate} EUR/min) ${funTimeCost.toFixed(2)} EUR`;
+    document.getElementById('energyCost').textContent = `(${energyMinutes.toFixed(2)}min × ${PRICING.energyRate} EUR/min) ${energyCost.toFixed(2)} EUR`;
     document.getElementById('marginCost').textContent = `${marginCost.toFixed(2)} EUR`;
     document.getElementById('totalCost').textContent = `${finalTotal.toFixed(2)} EUR`;
 }
