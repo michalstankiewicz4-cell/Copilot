@@ -126,13 +126,21 @@ function handleMouseClick(e) {
 }
 
 function updatePlayer() {
-    // Keyboard control
+    // Check if keyboard is actively being used
+    const keyboardActive = gameState.features.keyboardControl && (
+        gameState.keys['ArrowUp'] || gameState.keys['w'] ||
+        gameState.keys['ArrowDown'] || gameState.keys['s'] ||
+        gameState.keys['ArrowLeft'] || gameState.keys['a'] ||
+        gameState.keys['ArrowRight'] || gameState.keys['d']
+    );
+    
+    // Keyboard control (highest priority)
     if (gameState.features.keyboardControl) {
         if (gameState.keys['ArrowUp'] || gameState.keys['w']) {
             gameState.player.velocityY = -gameState.player.speed;
         } else if (gameState.keys['ArrowDown'] || gameState.keys['s']) {
             gameState.player.velocityY = gameState.player.speed;
-        } else {
+        } else if (!keyboardActive) {
             gameState.player.velocityY = 0;
         }
         
@@ -140,36 +148,39 @@ function updatePlayer() {
             gameState.player.velocityX = -gameState.player.speed;
         } else if (gameState.keys['ArrowRight'] || gameState.keys['d']) {
             gameState.player.velocityX = gameState.player.speed;
-        } else {
+        } else if (!keyboardActive) {
             gameState.player.velocityX = 0;
         }
     }
     
-    // Autofollow mouse - continuously follow cursor
-    if (gameState.features.autofollow && (gameState.mouseX > 0 || gameState.mouseY > 0)) {
-        const dx = gameState.mouseX - gameState.player.x;
-        const dy = gameState.mouseY - gameState.player.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        
-        if (distance > 5) {
-            gameState.player.velocityX = (dx / distance) * gameState.player.speed * 0.1;
-            gameState.player.velocityY = (dy / distance) * gameState.player.speed * 0.1;
+    // Mouse controls only work if keyboard is NOT being used
+    if (!keyboardActive) {
+        // Autofollow mouse - continuously follow cursor
+        if (gameState.features.autofollow && (gameState.mouseX > 0 || gameState.mouseY > 0)) {
+            const dx = gameState.mouseX - gameState.player.x;
+            const dy = gameState.mouseY - gameState.player.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance > 5) {
+                gameState.player.velocityX = (dx / distance) * gameState.player.speed * 0.1;
+                gameState.player.velocityY = (dy / distance) * gameState.player.speed * 0.1;
+            }
         }
-    }
-    // Mouse control - move to clicked position (only if autofollow is disabled)
-    else if (gameState.features.mouseControl && gameState.mouseClicked) {
-        const dx = gameState.targetX - gameState.player.x;
-        const dy = gameState.targetY - gameState.player.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        
-        if (distance > 5) {
-            gameState.player.velocityX = (dx / distance) * gameState.player.speed;
-            gameState.player.velocityY = (dy / distance) * gameState.player.speed;
-        } else {
-            // Reached destination - stop moving
-            gameState.mouseClicked = false;
-            gameState.player.velocityX = 0;
-            gameState.player.velocityY = 0;
+        // Mouse control - move to clicked position (only if autofollow is disabled)
+        else if (gameState.features.mouseControl && gameState.mouseClicked) {
+            const dx = gameState.targetX - gameState.player.x;
+            const dy = gameState.targetY - gameState.player.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance > 5) {
+                gameState.player.velocityX = (dx / distance) * gameState.player.speed;
+                gameState.player.velocityY = (dy / distance) * gameState.player.speed;
+            } else {
+                // Reached destination - stop moving
+                gameState.mouseClicked = false;
+                gameState.player.velocityX = 0;
+                gameState.player.velocityY = 0;
+            }
         }
     }
     
