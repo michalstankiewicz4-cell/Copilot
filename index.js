@@ -343,15 +343,14 @@ function render() {
     if (gameState.features.tips) {
         ctx.fillStyle = '#ffffff';
         ctx.font = '14px Arial';
-        ctx.fillText(`Position: (${Math.round(gameState.player.x)}, ${Math.round(gameState.player.y)})`, 10, 20);
         
         if (gameState.features.keyboardControl) {
-            ctx.fillText('Arrows: ← → ↑ ↓', 10, 40);
+            ctx.fillText('Arrows: ← → ↑ ↓', 10, 20);
         }
         if (gameState.features.autofollow) {
-            ctx.fillText('Mouse: follows cursor', 10, 60);
+            ctx.fillText('Mouse: follows cursor', 10, 40);
         } else if (gameState.features.mouseControl) {
-            ctx.fillText('Mouse: click to move', 10, 60);
+            ctx.fillText('Mouse: click to move', 10, 40);
         }
     }
     
