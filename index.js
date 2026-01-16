@@ -56,6 +56,10 @@ const gameState = {
         debugConsole: false,
         healthBar: true
     },
+    moduleTimeTracking: {}, // Track time each module is enabled
+    gameStartTime: null, // When game actually starts (RESTART pressed)
+    gameRunning: false,
+    lastUpdateTime: null,
     startTime: new Date('2026-01-16T15:00:00').getTime(),
     animationFrame: null
 };
@@ -103,6 +107,12 @@ function resizeCanvas() {
 }
 
 function handleKeyDown(e) {
+    // Show cost summary on Q key
+    if (e.key === 'q' || e.key === 'Q') {
+        showCostSummary();
+        return;
+    }
+    
     if (!gameState.features.keyboardControl) return;
     gameState.keys[e.key] = true;
 }
@@ -375,6 +385,7 @@ function render() {
 
 
 function gameLoop() {
+    updateModuleTimeTracking();
     updatePlayer();
     updateParticles();
     render();
@@ -395,6 +406,55 @@ function resetGame() {
     gameState.player.velocityY = 0;
     gameState.particles = [];
     gameState.keys = {};
+    
+    // Initialize game tracking
+    gameState.gameStartTime = Date.now();
+    gameState.gameRunning = true;
+    gameState.lastUpdateTime = Date.now();
+    
+    // Initialize time tracking for all modules
+    gameState.moduleTimeTracking = {};
+    Object.keys(PRICING.modules).forEach(key => {
+        gameState.moduleTimeTracking[key] = 0; // seconds
+    });
+}
+
+function updateModuleTimeTracking() {
+    if (!gameState.gameRunning) return;
+    
+    const now = Date.now();
+    const deltaSeconds = (now - gameState.lastUpdateTime) / 1000;
+    gameState.lastUpdateTime = now;
+    
+    // Add time for each currently enabled module
+    Object.keys(PRICING.modules).forEach(key => {
+        const isActive = gameState.features[key] !== undefined ? gameState.features[key] : true;
+        const isMandatory = PRICING.modules[key].mandatory || false;
+        
+        if (isActive || isMandatory) {
+            gameState.moduleTimeTracking[key] += deltaSeconds;
+        }
+    });
+}
+
+function resetGame() {
+    gameState.player.x = gameState.canvas.width / 2;
+    gameState.player.y = gameState.canvas.height / 2;
+    gameState.player.velocityX = 0;
+    gameState.player.velocityY = 0;
+    gameState.particles = [];
+    gameState.keys = {};
+    
+    // Reset and start game tracking
+    gameState.gameStartTime = Date.now();
+    gameState.gameRunning = true;
+    gameState.lastUpdateTime = Date.now();
+    
+    // Reset time tracking for all modules
+    gameState.moduleTimeTracking = {};
+    Object.keys(PRICING.modules).forEach(key => {
+        gameState.moduleTimeTracking[key] = 0;
+    });
 }
 
 function updateTimer() {
@@ -476,6 +536,46 @@ function updatePricing() {
     document.getElementById('promptCost').textContent = `(${PRICING.totalPrompts} × ${PRICING.promptRate} EUR) ${promptCost.toFixed(2)} EUR`;
     document.getElementById('marginCost').textContent = `${marginCost.toFixed(2)} EUR`;
     document.getElementById('totalCost').textContent = `${finalTotal.toFixed(2)} EUR`;
+}
+
+function showCostSummary() {
+    if (!gameState.gameRunning) {
+        alert('Game not started! Press RESTART GAME to begin.');
+        return;
+    }
+    
+    const gameTimeSeconds = (Date.now() - gameState.gameStartTime) / 1000;
+    const gameTimeMinutes = gameTimeSeconds / 60;
+    
+    let summary = '=== CURRENT GAME COST ===\n\n';
+    summary += `Game Time: ${Math.floor(gameTimeMinutes)}m ${Math.floor(gameTimeSeconds % 60)}s\n\n`;
+    summary += 'MODULE COSTS (time-based):\n';
+    
+    let moduleCost = 0;
+    Object.entries(PRICING.modules).forEach(([key, module]) => {
+        const timeUsed = gameState.moduleTimeTracking[key] || 0;
+        const percentUsed = gameTimeSeconds > 0 ? (timeUsed / gameTimeSeconds) : 0;
+        const cost = module.price * percentUsed;
+        moduleCost += cost;
+        
+        if (timeUsed > 0) {
+            summary += `${module.name}: ${timeUsed.toFixed(1)}s (${(percentUsed * 100).toFixed(0)}%) = ${cost.toFixed(2)} EUR\n`;
+        }
+    });
+    
+    const workTimeCost = (gameTimeMinutes / 60) * PRICING.hourlyRate;
+    const promptCost = PRICING.totalPrompts * PRICING.promptRate;
+    const subtotal = moduleCost + workTimeCost + promptCost;
+    const marginCost = subtotal * 0.10;
+    const total = subtotal + marginCost;
+    
+    summary += `\nWork Time: ${(gameTimeMinutes / 60).toFixed(4)}h × ${PRICING.hourlyRate} EUR/h = ${workTimeCost.toFixed(2)} EUR\n`;
+    summary += `AI Prompts: ${PRICING.totalPrompts} × ${PRICING.promptRate} EUR = ${promptCost.toFixed(2)} EUR\n`;
+    summary += `\nSubtotal: ${subtotal.toFixed(2)} EUR\n`;
+    summary += `Margin (10%): ${marginCost.toFixed(2)} EUR\n`;
+    summary += `\n=== TOTAL: ${total.toFixed(2)} EUR ===`;
+    
+    alert(summary);
 }
 
 // Start game when page loads
