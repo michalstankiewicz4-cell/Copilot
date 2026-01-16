@@ -56,10 +56,6 @@ const gameState = {
         debugConsole: false,
         healthBar: true
     },
-    moduleTimeTracking: {}, // Track time each module is enabled
-    gameStartTime: null, // When game actually starts (RESTART pressed)
-    gameRunning: false,
-    lastUpdateTime: null,
     startTime: new Date('2026-01-16T15:00:00').getTime(),
     animationFrame: null
 };
@@ -379,7 +375,6 @@ function render() {
 
 
 function gameLoop() {
-    updateModuleTimeTracking();
     updatePlayer();
     updateParticles();
     render();
@@ -413,24 +408,6 @@ function resetGame() {
     });
 }
 
-function updateModuleTimeTracking() {
-    if (!gameState.gameRunning) return;
-    
-    const now = Date.now();
-    const deltaSeconds = (now - gameState.lastUpdateTime) / 1000;
-    gameState.lastUpdateTime = now;
-    
-    // Add time for each currently enabled module
-    Object.keys(PRICING.modules).forEach(key => {
-        const isActive = gameState.features[key] !== undefined ? gameState.features[key] : true;
-        const isMandatory = PRICING.modules[key].mandatory || false;
-        
-        if (isActive || isMandatory) {
-            gameState.moduleTimeTracking[key] += deltaSeconds;
-        }
-    });
-}
-
 function resetGame() {
     gameState.player.x = gameState.canvas.width / 2;
     gameState.player.y = gameState.canvas.height / 2;
@@ -438,17 +415,6 @@ function resetGame() {
     gameState.player.velocityY = 0;
     gameState.particles = [];
     gameState.keys = {};
-    
-    // Reset and start game tracking
-    gameState.gameStartTime = Date.now();
-    gameState.gameRunning = true;
-    gameState.lastUpdateTime = Date.now();
-    
-    // Reset time tracking for all modules
-    gameState.moduleTimeTracking = {};
-    Object.keys(PRICING.modules).forEach(key => {
-        gameState.moduleTimeTracking[key] = 0;
-    });
 }
 
 function updateTimer() {
