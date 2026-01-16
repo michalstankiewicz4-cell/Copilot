@@ -438,10 +438,10 @@ function updatePricing() {
         item.innerHTML = `
             <div class="pricing-item-header">
                 <span class="${status}">${statusText} ${module.name}</span>
-                <span class="${status}">${module.price.toFixed(3)} EUR</span>
+                <span class="${status}">${module.price.toFixed(2)} EUR</span>
             </div>
             <div class="pricing-item-detail">
-                Memory: ${module.memory.toFixed(3)} KB ${isMandatory ? '(required)' : ''}
+                Memory: ${module.memory.toFixed(2)} KB ${isMandatory ? '(required)' : ''}
             </div>
         `;
         
@@ -460,11 +460,11 @@ function updatePricing() {
     const avgMemoryPerModule = activeModuleCount > 0 ? (totalMemory / activeModuleCount).toFixed(2) : 0;
     
     // Update summary
-    document.getElementById('memorySize').textContent = `${avgMemoryPerModule} KB/mod - ${totalMemory.toFixed(3)} KB`;
-    document.getElementById('moduleCost').textContent = `${activeModuleCount}/${totalModules} - ${totalModuleCost.toFixed(3)} EUR`;
-    document.getElementById('workTime').textContent = `(${hours.toFixed(4)}h × ${PRICING.hourlyRate} EUR/h) ${timeCost.toFixed(3)} EUR`;
-    document.getElementById('promptCost').textContent = `(${PRICING.totalPrompts} × ${PRICING.promptRate} EUR) ${promptCost.toFixed(3)} EUR`;
-    document.getElementById('totalCost').textContent = `${(totalModuleCost + timeCost + promptCost).toFixed(3)} EUR`;
+    document.getElementById('memorySize').textContent = `${avgMemoryPerModule} KB/mod - ${totalMemory.toFixed(2)} KB`;
+    document.getElementById('moduleCost').textContent = `${activeModuleCount}/${totalModules} - ${totalModuleCost.toFixed(2)} EUR`;
+    document.getElementById('workTime').textContent = `(${hours.toFixed(4)}h × ${PRICING.hourlyRate} EUR/h) ${timeCost.toFixed(2)} EUR`;
+    document.getElementById('promptCost').textContent = `(${PRICING.totalPrompts} × ${PRICING.promptRate} EUR) ${promptCost.toFixed(2)} EUR`;
+    document.getElementById('totalCost').textContent = `${(totalModuleCost + timeCost + promptCost).toFixed(2)} EUR`;
 }
 
 // Start game when page loads
