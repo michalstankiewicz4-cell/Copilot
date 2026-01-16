@@ -30,6 +30,7 @@ const gameState = {
     keys: {},
     mouseX: 0,
     mouseY: 0,
+    mouseClicked: false,
     particles: [],
     features: {
         keyboardControl: true,
@@ -55,6 +56,7 @@ function init() {
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
     gameState.canvas.addEventListener('mousemove', handleMouseMove);
+    gameState.canvas.addEventListener('click', handleMouseClick);
     
     // Control toggles
     Object.keys(gameState.features).forEach(feature => {
@@ -101,6 +103,14 @@ function handleMouseMove(e) {
     gameState.mouseY = e.clientY - rect.top;
 }
 
+function handleMouseClick(e) {
+    if (!gameState.features.mouseControl) return;
+    const rect = gameState.canvas.getBoundingClientRect();
+    gameState.mouseX = e.clientX - rect.left;
+    gameState.mouseY = e.clientY - rect.top;
+    gameState.mouseClicked = true;
+}
+
 function updatePlayer() {
     // Keyboard control
     if (gameState.features.keyboardControl) {
@@ -121,15 +131,20 @@ function updatePlayer() {
         }
     }
     
-    // Mouse control - smooth follow
-    if (gameState.features.mouseControl && (gameState.mouseX > 0 || gameState.mouseY > 0)) {
+    // Mouse control - move to clicked position
+    if (gameState.features.mouseControl && gameState.mouseClicked) {
         const dx = gameState.mouseX - gameState.player.x;
         const dy = gameState.mouseY - gameState.player.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
         
         if (distance > 5) {
-            gameState.player.velocityX = (dx / distance) * gameState.player.speed * 0.1;
-            gameState.player.velocityY = (dy / distance) * gameState.player.speed * 0.1;
+            gameState.player.velocityX = (dx / distance) * gameState.player.speed;
+            gameState.player.velocityY = (dy / distance) * gameState.player.speed;
+        } else {
+            // Reached destination - stop moving
+            gameState.mouseClicked = false;
+            gameState.player.velocityX = 0;
+            gameState.player.velocityY = 0;
         }
     }
     
@@ -254,7 +269,7 @@ function render() {
         ctx.fillText('Strzałki: ← → ↑ ↓', 10, 40);
     }
     if (gameState.features.mouseControl) {
-        ctx.fillText('Mysz: podążaj za kursorem', 10, 60);
+        ctx.fillText('Mysz: kliknij aby się przemieścić', 10, 60);
     }
 }
 
