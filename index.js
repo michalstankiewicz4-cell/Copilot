@@ -19,7 +19,7 @@ const PRICING = {
     hourlyRate: 35, // EUR per hour (150 PLN / 4.30)
     promptRate: 0.25, // EUR per prompt (increased from 0.035)
     funTimeRate: 0.25, // EUR per minute - premium fun time!
-    energyRate: 0.10, // EUR per minute - "electricity" cost
+    energyHourlyRate: 6, // EUR per hour - electricity cost (0.10 EUR/min × 60)
     totalPrompts: 26 // Updated: added this prompt about AI prompts price change
 };
 
@@ -479,10 +479,10 @@ function updatePricing() {
     // Calculate prompt cost
     const promptCost = PRICING.totalPrompts * PRICING.promptRate;
     
-    // Calculate energy cost (from project start - 15:00)
+    // Calculate energy cost (from project start - 15:00) - in hours
     const energyElapsed = Date.now() - gameState.startTime;
-    const energyMinutes = energyElapsed / 60000;
-    const energyCost = energyMinutes * PRICING.energyRate;
+    const energyHours = energyElapsed / 3600000;
+    const energyCost = energyHours * PRICING.energyHourlyRate;
     
     // Calculate fun time cost (from page load - when user started playing)
     const funElapsed = Date.now() - gameState.funStartTime;
@@ -507,7 +507,7 @@ function updatePricing() {
     document.getElementById('moduleCost').textContent = `${activeModuleCount}/${totalModules} - ${totalModuleCost.toFixed(2)} EUR`;
     document.getElementById('workTime').textContent = `(${hours.toFixed(2)}h × ${PRICING.hourlyRate} EUR/h) ${timeCost.toFixed(2)} EUR`;
     document.getElementById('promptCost').textContent = `(${PRICING.totalPrompts} × ${PRICING.promptRate} EUR) ${promptCost.toFixed(2)} EUR`;
-    document.getElementById('energyCost').textContent = `(${energyMinutes.toFixed(2)}min × ${PRICING.energyRate} EUR/min) ${energyCost.toFixed(2)} EUR`;
+    document.getElementById('energyCost').textContent = `(${energyHours.toFixed(2)}h × ${PRICING.energyHourlyRate} EUR/h) ${energyCost.toFixed(2)} EUR`;
     document.getElementById('funTime').textContent = `(${funMinutes.toFixed(2)}min × ${PRICING.funTimeRate} EUR/min) ${funTimeCost.toFixed(2)} EUR`;
     document.getElementById('marginCost').textContent = `${marginCost.toFixed(2)} EUR`;
     document.getElementById('totalCost').textContent = `${finalTotal.toFixed(2)} EUR`;
