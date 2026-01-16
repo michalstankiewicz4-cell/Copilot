@@ -459,12 +459,23 @@ function updatePricing() {
     // Calculate average memory cost per active module
     const avgMemoryPerModule = activeModuleCount > 0 ? (totalMemory / activeModuleCount).toFixed(2) : 0;
     
+    // Calculate subtotal (before margin)
+    const subtotal = totalModuleCost + timeCost + promptCost;
+    
+    // Calculate margin (10% of subtotal)
+    const marginRate = 0.10;
+    const marginCost = subtotal * marginRate;
+    
+    // Calculate final total (subtotal + margin)
+    const finalTotal = subtotal + marginCost;
+    
     // Update summary
     document.getElementById('memorySize').textContent = `${avgMemoryPerModule} KB/mod - ${totalMemory.toFixed(2)} KB`;
     document.getElementById('moduleCost').textContent = `${activeModuleCount}/${totalModules} - ${totalModuleCost.toFixed(2)} EUR`;
     document.getElementById('workTime').textContent = `(${hours.toFixed(2)}h × ${PRICING.hourlyRate} EUR/h) ${timeCost.toFixed(2)} EUR`;
     document.getElementById('promptCost').textContent = `(${PRICING.totalPrompts} × ${PRICING.promptRate} EUR) ${promptCost.toFixed(2)} EUR`;
-    document.getElementById('totalCost').textContent = `${(totalModuleCost + timeCost + promptCost).toFixed(2)} EUR`;
+    document.getElementById('marginCost').textContent = `${marginCost.toFixed(2)} EUR`;
+    document.getElementById('totalCost').textContent = `${finalTotal.toFixed(2)} EUR`;
 }
 
 // Start game when page loads
