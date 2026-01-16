@@ -12,6 +12,8 @@ const PRICING = {
         tips: { name: 'Tips Display', price: 81, memory: 1 },
         debugConsole: { name: 'Debug Console', price: 70, memory: 0.8 },
         healthBar: { name: 'Health Bar', price: 105, memory: 1.5 },
+        walls: { name: 'Walls', price: 350, memory: 2 },
+        wallCollision: { name: 'Wall Collision', price: 450, memory: 3 },
         gameEngine: { name: 'Game Engine (core)', price: 465, memory: 10, mandatory: true },
         rendering: { name: 'Rendering System', price: 233, memory: 5, mandatory: true },
         physics: { name: 'Physics Engine', price: 163, memory: 3.5, mandatory: true }
@@ -56,8 +58,20 @@ const gameState = {
         particles: true,
         tips: true,
         debugConsole: false,
-        healthBar: true
+        healthBar: true,
+        walls: true,
+        wallCollision: true
     },
+    walls: [
+        // Top wall with opening on right
+        { x: 0, y: 0, width: 600, height: 20 },
+        // Bottom wall with opening on left
+        { x: 200, y: 580, width: 600, height: 20 },
+        // Left wall (full)
+        { x: 0, y: 0, width: 20, height: 600 },
+        // Right wall (full)
+        { x: 780, y: 0, width: 20, height: 600 }
+    ],
     startTime: new Date('2026-01-16T15:00:00').getTime(),
     funStartTime: Date.now(), // Fun time starts when page loads!
     animationFrame: null
@@ -119,6 +133,20 @@ function handleMouseMove(e) {
     const rect = gameState.canvas.getBoundingClientRect();
     gameState.mouseX = e.clientX - rect.left;
     gameState.mouseY = e.clientY - rect.top;
+}
+
+function checkCircleRectCollision(circleX, circleY, circleRadius, rect) {
+    // Find the closest point on the rectangle to the circle
+    const closestX = Math.max(rect.x, Math.min(circleX, rect.x + rect.width));
+    const closestY = Math.max(rect.y, Math.min(circleY, rect.y + rect.height));
+    
+    // Calculate distance from circle center to this closest point
+    const distanceX = circleX - closestX;
+    const distanceY = circleY - closestY;
+    const distanceSquared = (distanceX * distanceX) + (distanceY * distanceY);
+    
+    // Collision if distance is less than circle radius
+    return distanceSquared < (circleRadius * circleRadius);
 }
 
 function handleMouseClick(e) {
@@ -191,9 +219,38 @@ function updatePlayer() {
         }
     }
     
-    // Apply velocity
-    gameState.player.x += gameState.player.velocityX;
-    gameState.player.y += gameState.player.velocityY;
+    // Calculate new position
+    const newX = gameState.player.x + gameState.player.velocityX;
+    const newY = gameState.player.y + gameState.player.velocityY;
+    
+    // Check wall collision if enabled
+    if (gameState.features.wallCollision && gameState.features.walls) {
+        let collisionX = false;
+        let collisionY = false;
+        
+        gameState.walls.forEach(wall => {
+            // Check X-axis collision
+            if (checkCircleRectCollision(newX, gameState.player.y, gameState.player.radius, wall)) {
+                collisionX = true;
+            }
+            // Check Y-axis collision
+            if (checkCircleRectCollision(gameState.player.x, newY, gameState.player.radius, wall)) {
+                collisionY = true;
+            }
+        });
+        
+        // Apply velocity only if no collision
+        if (!collisionX) {
+            gameState.player.x = newX;
+        }
+        if (!collisionY) {
+            gameState.player.y = newY;
+        }
+    } else {
+        // No collision check - apply velocity normally
+        gameState.player.x = newX;
+        gameState.player.y = newY;
+    }
     
     // Boundary check
     gameState.player.x = Math.max(gameState.player.radius, Math.min(gameState.canvas.width - gameState.player.radius, gameState.player.x));
@@ -277,6 +334,15 @@ function render() {
             ctx.fill();
         });
         ctx.globalAlpha = 1;
+    }
+    
+    // Draw walls
+    if (gameState.features.walls) {
+        const wallColor = gameState.features.colorMode ? '#4CAF50' : '#CCCCCC';
+        ctx.fillStyle = wallColor;
+        gameState.walls.forEach(wall => {
+            ctx.fillRect(wall.x, wall.y, wall.width, wall.height);
+        });
     }
     
     // Draw player
