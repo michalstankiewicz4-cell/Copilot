@@ -18,7 +18,7 @@ const PRICING = {
     },
     hourlyRate: 35, // EUR per hour (150 PLN / 4.30)
     promptRate: 0.25, // EUR per prompt (increased from 0.035)
-    funTimeRate: 0.10, // EUR per minute - just for playing the game!
+    funTimeRate: 0.25, // EUR per minute - premium fun time!
     energyRate: 0.10, // EUR per minute - "electricity" cost
     totalPrompts: 26 // Updated: added this prompt about AI prompts price change
 };
