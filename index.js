@@ -10,6 +10,7 @@ const PRICING = {
         sounds: { name: 'Sound System', price: 600, memory: 2.5 },
         particles: { name: 'Particle Effects', price: 1200, memory: 4 },
         tips: { name: 'Tips Display', price: 350, memory: 1 },
+        debugConsole: { name: 'Debug Console', price: 300, memory: 0.8 },
         healthBar: { name: 'Health Bar', price: 450, memory: 1.5 },
         gameEngine: { name: 'Game Engine (core)', price: 2000, memory: 10, mandatory: true },
         rendering: { name: 'Rendering System', price: 1000, memory: 5, mandatory: true },
@@ -50,6 +51,7 @@ const gameState = {
         sounds: true,
         particles: true,
         tips: true,
+        debugConsole: false,
         healthBar: true
     },
     startTime: new Date('2026-01-16T15:00:00').getTime(),
@@ -352,7 +354,24 @@ function render() {
             ctx.fillText('Mouse: click to move', 10, 60);
         }
     }
+    
+    // Draw Debug Console (bottom left)
+    if (gameState.features.debugConsole) {
+        const debugX = 10;
+        const debugY = gameState.canvas.height - 10;
+        
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        ctx.fillRect(debugX - 5, debugY - 65, 250, 70);
+        
+        ctx.fillStyle = gameState.features.colorMode ? '#00FF00' : '#CCCCCC';
+        ctx.font = '12px Courier New';
+        ctx.fillText(`DEBUG CONSOLE`, debugX, debugY - 50);
+        ctx.fillText(`Position: (${Math.round(gameState.player.x)}, ${Math.round(gameState.player.y)})`, debugX, debugY - 35);
+        ctx.fillText(`Velocity: (${gameState.player.velocityX.toFixed(2)}, ${gameState.player.velocityY.toFixed(2)})`, debugX, debugY - 20);
+        ctx.fillText(`FPS: ${Math.round(1000 / 16)}`, debugX, debugY - 5);
+    }
 }
+
 
 function gameLoop() {
     updatePlayer();
