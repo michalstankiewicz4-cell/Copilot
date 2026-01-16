@@ -8,7 +8,8 @@ const PRICING = {
         animations: { name: 'Smooth Animations', price: 800, memory: 3 },
         sounds: { name: 'Sound System', price: 600, memory: 2.5 },
         particles: { name: 'Particle Effects', price: 1200, memory: 4 },
-        hud: { name: 'HUD Display', price: 350, memory: 1 },
+        tips: { name: 'Tips Display', price: 350, memory: 1 },
+        healthBar: { name: 'Health Bar', price: 450, memory: 1.5 },
         gameEngine: { name: 'Game Engine (core)', price: 2000, memory: 10, mandatory: true },
         rendering: { name: 'Rendering System', price: 1000, memory: 5, mandatory: true },
         physics: { name: 'Physics Engine', price: 700, memory: 3.5, mandatory: true }
@@ -27,7 +28,9 @@ const gameState = {
         color: '#4CAF50',
         velocityX: 0,
         velocityY: 0,
-        speed: 5
+        speed: 5,
+        health: 100,
+        maxHealth: 100
     },
     keys: {},
     mouseX: 0,
@@ -42,7 +45,8 @@ const gameState = {
         animations: true,
         sounds: true,
         particles: true,
-        hud: true
+        tips: true,
+        healthBar: true
     },
     startTime: new Date('2026-01-16T15:00:00').getTime(),
     animationFrame: null
@@ -275,8 +279,38 @@ function render() {
         ctx.stroke();
     }
     
-    // Draw info text (HUD)
-    if (gameState.features.hud) {
+    // Draw health bar
+    if (gameState.features.healthBar) {
+        const barWidth = 200;
+        const barHeight = 20;
+        const barX = gameState.canvas.width - barWidth - 10;
+        const barY = 10;
+        
+        // Background (gray)
+        ctx.fillStyle = '#333333';
+        ctx.fillRect(barX, barY, barWidth, barHeight);
+        
+        // Health (green or grayscale)
+        const healthPercent = gameState.player.health / gameState.player.maxHealth;
+        const healthColor = gameState.features.colorMode ? '#4CAF50' : '#CCCCCC';
+        ctx.fillStyle = healthColor;
+        ctx.fillRect(barX, barY, barWidth * healthPercent, barHeight);
+        
+        // Border
+        ctx.strokeStyle = gameState.features.colorMode ? '#8FFF8F' : '#FFFFFF';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(barX, barY, barWidth, barHeight);
+        
+        // Text
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '12px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText(`HP: ${gameState.player.health}/${gameState.player.maxHealth}`, barX + barWidth / 2, barY + 14);
+        ctx.textAlign = 'left';
+    }
+    
+    // Draw info text (Tips)
+    if (gameState.features.tips) {
         ctx.fillStyle = '#ffffff';
         ctx.font = '14px Arial';
         ctx.fillText(`Position: (${Math.round(gameState.player.x)}, ${Math.round(gameState.player.y)})`, 10, 20);
