@@ -18,6 +18,7 @@ const PRICING = {
     },
     hourlyRate: 35, // EUR per hour (150 PLN / 4.30)
     promptRate: 0.25, // EUR per prompt (increased from 0.035)
+    funTimeRate: 0.10, // EUR per minute - just for playing the game!
     totalPrompts: 26 // Updated: added this prompt about AI prompts price change
 };
 
@@ -57,6 +58,7 @@ const gameState = {
         healthBar: true
     },
     startTime: new Date('2026-01-16T15:00:00').getTime(),
+    funStartTime: Date.now(), // Fun time starts when page loads!
     animationFrame: null
 };
 
@@ -471,16 +473,21 @@ function updatePricing() {
     // Calculate time cost
     const elapsed = Date.now() - gameState.startTime;
     const hours = elapsed / 3600000;
-    const timeCost = hours * PRICING.hourlyRate; // Remove Math.round for precise display
+    const timeCost = hours * PRICING.hourlyRate;
     
     // Calculate prompt cost
     const promptCost = PRICING.totalPrompts * PRICING.promptRate;
+    
+    // Calculate fun time cost (from page load)
+    const funElapsed = Date.now() - gameState.funStartTime;
+    const funMinutes = funElapsed / 60000;
+    const funTimeCost = funMinutes * PRICING.funTimeRate;
     
     // Calculate average memory cost per active module
     const avgMemoryPerModule = activeModuleCount > 0 ? (totalMemory / activeModuleCount).toFixed(2) : 0;
     
     // Calculate subtotal (before margin)
-    const subtotal = totalModuleCost + timeCost + promptCost;
+    const subtotal = totalModuleCost + timeCost + promptCost + funTimeCost;
     
     // Calculate margin (10% of subtotal)
     const marginRate = 0.10;
@@ -494,6 +501,7 @@ function updatePricing() {
     document.getElementById('moduleCost').textContent = `${activeModuleCount}/${totalModules} - ${totalModuleCost.toFixed(2)} EUR`;
     document.getElementById('workTime').textContent = `(${hours.toFixed(2)}h × ${PRICING.hourlyRate} EUR/h) ${timeCost.toFixed(2)} EUR`;
     document.getElementById('promptCost').textContent = `(${PRICING.totalPrompts} × ${PRICING.promptRate} EUR) ${promptCost.toFixed(2)} EUR`;
+    document.getElementById('funTime').textContent = `(${funMinutes.toFixed(2)}min × ${PRICING.funTimeRate} EUR/min) ${funTimeCost.toFixed(2)} EUR`;
     document.getElementById('marginCost').textContent = `${marginCost.toFixed(2)} EUR`;
     document.getElementById('totalCost').textContent = `${finalTotal.toFixed(2)} EUR`;
 }
