@@ -1,82 +1,84 @@
-# Copilot - Gra z Systemem Wyceny
+# Copilot - Game with Pricing System
 
-Interaktywna gra z dynamicznym systemem wyceny w czasie rzeczywistym.
+Interactive game with real-time dynamic pricing system.
 
-## Funkcje
+## Features
 
-### Sterowanie
-- **Strzałki klawiatury**: ← → ↑ ↓ (lub WASD)
-- **Mysz**: Kropka płynnie podąża za kursorem
+### Controls
+- **Keyboard arrows**: ← → ↑ ↓ (or WASD)
+- **Mouse**: Click to move the dot to target position
 
-### Panel Sterowania (Lewy)
-- Timer czasu tworzenia gry
-- Checkboxy do włączania/wyłączania funkcji w locie:
-  - Sterowanie strzałkami
-  - Sterowanie myszką
-  - Grafika HD (siatka, efekty świetlne)
-  - Animacje płynne (60 FPS)
-  - System dźwięków
-  - Efekty cząsteczkowe (ślad za kropką)
-- Przycisk RESTART do resetowania pozycji
+### Control Panel (Left)
+- Game development time timer (counts from 2026-01-16 15:00)
+- Checkboxes to enable/disable features on the fly:
+  - Keyboard Control
+  - Mouse Control
+  - HD Graphics (grid, light effects)
+  - Color Mode (B&W when disabled)
+  - Smooth Animations (60 FPS)
+  - Sound System
+  - Particle Effects (trail behind dot)
+- RESTART button to reset position
 
-### Gra (Środek)
-- Czarna plansza z siatką (gdy Grafika HD włączona)
-- Zielona kropka z efektem świecenia
-- Efekty cząsteczkowe podczas ruchu
-- Wyświetlanie pozycji i dostępnego sterowania
+### Game (Center)
+- Black board with grid (when HD Graphics enabled)
+- Green dot with glow effect (gray in B&W mode)
+- Particle effects during movement
+- Display of position and available controls
 
-### Panel Wyceny (Prawy)
-- Lista wszystkich modułów z cenami
-- Status aktywny/nieaktywny (✓/✗)
-- Zajętość pamięci każdego modułu
-- **Podsumowanie:**
-  - Koszt modułów kodu
-  - Pamięć zajęta (KB)
-  - Czas pracy (150 PLN/h)
-  - Suma całkowita
+### Pricing Panel (Right)
+- List of all modules with prices
+- Active/inactive status (✓/✗)
+- Memory usage of each module
+- **Summary:**
+  - Code modules cost
+  - Memory used (KB)
+  - Work time (150 PLN/h)
+  - Total sum
 
-## Moduły i Ceny
+## Modules and Prices
 
-| Moduł | Cena | Pamięć | Wymagany |
-|-------|------|--------|----------|
-| Sterowanie strzałkami | 500 PLN | 2 KB | Nie |
-| Sterowanie myszką | 400 PLN | 1.5 KB | Nie |
-| Grafika HD | 1500 PLN | 8 KB | Nie |
-| Animacje płynne | 800 PLN | 3 KB | Nie |
-| System dźwięków | 600 PLN | 2.5 KB | Nie |
-| Efekty cząsteczkowe | 1200 PLN | 4 KB | Nie |
-| Silnik gry (core) | 2000 PLN | 10 KB | **TAK** |
-| System renderowania | 1000 PLN | 5 KB | **TAK** |
-| Fizyka ruchu | 700 PLN | 3.5 KB | **TAK** |
+| Module | Price | Memory | Required |
+|--------|-------|--------|----------|
+| Keyboard Control | 500 PLN | 2 KB | No |
+| Mouse Control | 400 PLN | 1.5 KB | No |
+| HD Graphics | 1500 PLN | 8 KB | No |
+| Color Mode | 900 PLN | 3 KB | No |
+| Smooth Animations | 800 PLN | 3 KB | No |
+| Sound System | 600 PLN | 2.5 KB | No |
+| Particle Effects | 1200 PLN | 4 KB | No |
+| Game Engine (core) | 2000 PLN | 10 KB | **YES** |
+| Rendering System | 1000 PLN | 5 KB | **YES** |
+| Physics Engine | 700 PLN | 3.5 KB | **YES** |
 
-## Uruchomienie
+## How to Run
 
-1. Otwórz `game.html` w przeglądarce
-2. Gra startuje automatycznie
-3. Timer zaczyna liczyć od momentu załadowania
-4. Wyłączaj/włączaj funkcje aby zobaczyć zmiany w cenie
+1. Open `index.html` in a browser
+2. Game starts automatically
+3. Timer starts counting from 2026-01-16 15:00
+4. Toggle features on/off to see price changes in real-time
 
-## Technologia
+## Technology
 
-- **HTML5 Canvas** - renderowanie grafiki
-- **JavaScript (ES6+)** - logika gry
-- **CSS3 Grid** - układ interfejsu
-- Brak zależności zewnętrznych
-- Działa bez serwera (tylko przeglądarka)
+- **HTML5 Canvas** - graphics rendering
+- **JavaScript (ES6+)** - game logic
+- **CSS3 Grid** - interface layout
+- No external dependencies
+- Runs without a server (browser only)
 
-## Struktura Plików
+## File Structure
 
 ```
 Copilot/
-├── game.html       # Główny plik HTML z interfejsem
-├── game.js         # Logika gry i system wyceny
-└── README.md       # Ten plik
+├── index.html      # Main HTML file with interface
+├── index.js        # Game logic and pricing system
+└── README.md       # This file
 ```
 
-## Autorzy
+## Authors
 
-Projekt Copilot - System wyceny gier
+Copilot Project - Game Pricing System
 
-## Licencja
+## License
 
 MIT License

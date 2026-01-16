@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gra z Wycenami</title>
+    <title>Game with Pricing System</title>
     <style>
         * {
             margin: 0;
@@ -169,63 +169,63 @@
     <div class="container">
         <!-- Left Panel - Controls -->
         <div class="panel">
-            <h2>Sterowanie</h2>
+            <h2>Controls</h2>
             
             <div class="timer">
-                <div>Czas tworzenia:</div>
+                <div>Development Time:</div>
                 <div class="timer-value" id="timer">00:00:00</div>
             </div>
 
             <div class="control-item">
                 <label>
                     <input type="checkbox" id="keyboardControl" checked>
-                    <span>Sterowanie strzałkami</span>
+                    <span>Keyboard Control</span>
                 </label>
             </div>
 
             <div class="control-item">
                 <label>
                     <input type="checkbox" id="mouseControl" checked>
-                    <span>Sterowanie myszką</span>
+                    <span>Mouse Control</span>
                 </label>
             </div>
 
             <div class="control-item">
                 <label>
                     <input type="checkbox" id="graphics" checked>
-                    <span>Grafika HD</span>
+                    <span>HD Graphics</span>
                 </label>
             </div>
 
             <div class="control-item">
                 <label>
                     <input type="checkbox" id="colorMode" checked>
-                    <span>Kolor (B&W gdy wyłączony)</span>
+                    <span>Color Mode (B&W if disabled)</span>
                 </label>
             </div>
 
             <div class="control-item">
                 <label>
                     <input type="checkbox" id="animations" checked>
-                    <span>Animacje</span>
+                    <span>Animations</span>
                 </label>
             </div>
 
             <div class="control-item">
                 <label>
                     <input type="checkbox" id="sounds" checked>
-                    <span>Dźwięki</span>
+                    <span>Sound System</span>
                 </label>
             </div>
 
             <div class="control-item">
                 <label>
                     <input type="checkbox" id="particles" checked>
-                    <span>Efekty cząsteczkowe</span>
+                    <span>Particle Effects</span>
                 </label>
             </div>
 
-            <button class="reset-btn" id="resetBtn">🔄 RESTART GRY</button>
+            <button class="reset-btn" id="resetBtn">🔄 RESTART GAME</button>
         </div>
 
         <!-- Middle - Game -->
@@ -235,25 +235,25 @@
 
         <!-- Right Panel - Pricing -->
         <div class="panel">
-            <h2>Wycena Projektu</h2>
+            <h2>Project Pricing</h2>
 
             <div id="pricingList"></div>
 
             <div class="summary">
                 <div class="summary-row">
-                    <span>Moduły kodu:</span>
+                    <span>Code Modules:</span>
                     <span id="moduleCost">0 PLN</span>
                 </div>
                 <div class="summary-row">
-                    <span>Pamięć zajęta:</span>
+                    <span>Memory Used:</span>
                     <span id="memorySize">0 KB</span>
                 </div>
                 <div class="summary-row">
-                    <span>Czas pracy:</span>
+                    <span>Work Time:</span>
                     <span id="workTime">0 PLN</span>
                 </div>
                 <div class="summary-row summary-total">
-                    <span>RAZEM:</span>
+                    <span>TOTAL:</span>
                     <span id="totalCost">0 PLN</span>
                 </div>
             </div>

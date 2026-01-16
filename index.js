@@ -1,16 +1,16 @@
 // Game Configuration and Pricing
 const PRICING = {
     modules: {
-        keyboardControl: { name: 'Sterowanie strzałkami', price: 500, memory: 2 },
-        mouseControl: { name: 'Sterowanie myszką', price: 400, memory: 1.5 },
-        graphics: { name: 'Grafika HD', price: 1500, memory: 8 },
-        colorMode: { name: 'Tryb kolorowy', price: 900, memory: 3 },
-        animations: { name: 'Animacje płynne', price: 800, memory: 3 },
-        sounds: { name: 'System dźwięków', price: 600, memory: 2.5 },
-        particles: { name: 'Efekty cząsteczkowe', price: 1200, memory: 4 },
-        gameEngine: { name: 'Silnik gry (core)', price: 2000, memory: 10, mandatory: true },
-        rendering: { name: 'System renderowania', price: 1000, memory: 5, mandatory: true },
-        physics: { name: 'Fizyka ruchu', price: 700, memory: 3.5, mandatory: true }
+        keyboardControl: { name: 'Keyboard Control', price: 500, memory: 2 },
+        mouseControl: { name: 'Mouse Control', price: 400, memory: 1.5 },
+        graphics: { name: 'HD Graphics', price: 1500, memory: 8 },
+        colorMode: { name: 'Color Mode', price: 900, memory: 3 },
+        animations: { name: 'Smooth Animations', price: 800, memory: 3 },
+        sounds: { name: 'Sound System', price: 600, memory: 2.5 },
+        particles: { name: 'Particle Effects', price: 1200, memory: 4 },
+        gameEngine: { name: 'Game Engine (core)', price: 2000, memory: 10, mandatory: true },
+        rendering: { name: 'Rendering System', price: 1000, memory: 5, mandatory: true },
+        physics: { name: 'Physics Engine', price: 700, memory: 3.5, mandatory: true }
     },
     hourlyRate: 150 // PLN per hour
 };
@@ -276,13 +276,13 @@ function render() {
     // Draw info text
     ctx.fillStyle = '#ffffff';
     ctx.font = '14px Arial';
-    ctx.fillText(`Pozycja: (${Math.round(gameState.player.x)}, ${Math.round(gameState.player.y)})`, 10, 20);
+    ctx.fillText(`Position: (${Math.round(gameState.player.x)}, ${Math.round(gameState.player.y)})`, 10, 20);
     
     if (gameState.features.keyboardControl) {
-        ctx.fillText('Strzałki: ← → ↑ ↓', 10, 40);
+        ctx.fillText('Arrows: ← → ↑ ↓', 10, 40);
     }
     if (gameState.features.mouseControl) {
-        ctx.fillText('Mysz: kliknij aby się przemieścić', 10, 60);
+        ctx.fillText('Mouse: click to move', 10, 60);
     }
 }
 
@@ -350,7 +350,7 @@ function updatePricing() {
                 <span class="${status}">${module.price} PLN</span>
             </div>
             <div class="pricing-item-detail">
-                Pamięć: ${module.memory} KB ${isMandatory ? '(wymagane)' : ''}
+                Memory: ${module.memory} KB ${isMandatory ? '(required)' : ''}
             </div>
         `;
         
