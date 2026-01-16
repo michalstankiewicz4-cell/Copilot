@@ -37,6 +37,8 @@ const gameState = {
     mouseX: 0,
     mouseY: 0,
     mouseClicked: false,
+    targetX: 0,
+    targetY: 0,
     particles: [],
     features: {
         keyboardControl: true,
@@ -107,7 +109,6 @@ function handleKeyUp(e) {
 }
 
 function handleMouseMove(e) {
-    if (!gameState.features.mouseControl) return;
     const rect = gameState.canvas.getBoundingClientRect();
     gameState.mouseX = e.clientX - rect.left;
     gameState.mouseY = e.clientY - rect.top;
@@ -116,8 +117,11 @@ function handleMouseMove(e) {
 function handleMouseClick(e) {
     if (!gameState.features.mouseControl) return;
     const rect = gameState.canvas.getBoundingClientRect();
-    gameState.mouseX = e.clientX - rect.left;
-    gameState.mouseY = e.clientY - rect.top;
+    const clickX = e.clientX - rect.left;
+    const clickY = e.clientY - rect.top;
+    // Save target position for mouse control
+    gameState.targetX = clickX;
+    gameState.targetY = clickY;
     gameState.mouseClicked = true;
 }
 
@@ -154,8 +158,8 @@ function updatePlayer() {
     }
     // Mouse control - move to clicked position (only if autofollow is disabled)
     else if (gameState.features.mouseControl && gameState.mouseClicked) {
-        const dx = gameState.mouseX - gameState.player.x;
-        const dy = gameState.mouseY - gameState.player.y;
+        const dx = gameState.targetX - gameState.player.x;
+        const dy = gameState.targetY - gameState.player.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
         
         if (distance > 5) {
