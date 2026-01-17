@@ -1,33 +1,33 @@
 ﻿// Game Configuration and Pricing
 const PRICING = {
     modules: {
-        keyboardControl: { name: 'Keyboard Control', price: 150, memory: 2 },
-        mouseControl: { name: 'Mouse Control', price: 93, memory: 1.5 },
-        autofollow: { name: 'Autofollow Mouse', price: 93, memory: 1.5 },
-        graphics: { name: 'HD Graphics', price: 200, memory: 10 },
-        colorMode: { name: 'Color Mode', price: 60, memory: 3 },
-        animations: { name: 'Smooth Animations', price: 186, memory: 3 },
-        sounds: { name: 'Sound System', price: 140, memory: 2.5 },
-        particles: { name: 'Particle Effects', price: 150, memory: 4 },
-        tips: { name: 'Tips Display', price: 50, memory: 1.3 },
-        debugConsole: { name: 'Debug Console', price: 90, memory: 1.2 },
-        healthBar: { name: 'Health Bar', price: 105, memory: 1.5 },
-        walls: { name: 'Walls', price: 80, memory: 3 },
-        wallCollision: { name: 'Wall Collision', price: 180, memory: 3 },
-        gameEngine: { name: 'Game Engine (core)', price: 465, memory: 10, mandatory: true },
-        rendering: { name: 'Rendering System', price: 233, memory: 8, mandatory: true },
-        physics: { name: 'Physics Engine', price: 163, memory: 3.5, mandatory: true }
+        keyboardControl: { name: 'Keyboard Control', price: 174, memory: 2 },
+        mouseControl: { name: 'Mouse Control', price: 107, memory: 1.5 },
+        autofollow: { name: 'Autofollow Mouse', price: 107, memory: 1.5 },
+        graphics: { name: 'HD Graphics', price: 231, memory: 10 },
+        colorMode: { name: 'Color Mode', price: 69, memory: 3 },
+        animations: { name: 'Smooth Animations', price: 215, memory: 3 },
+        sounds: { name: 'Sound System', price: 162, memory: 2.5 },
+        particles: { name: 'Particle Effects', price: 174, memory: 4 },
+        tips: { name: 'Tips Display', price: 57, memory: 1.3 },
+        debugConsole: { name: 'Debug Console', price: 104, memory: 1.2 },
+        healthBar: { name: 'Health Bar', price: 121, memory: 1.5 },
+        walls: { name: 'Walls', price: 92, memory: 3 },
+        wallCollision: { name: 'Wall Collision', price: 208, memory: 3 },
+        gameEngine: { name: 'Game Engine (core)', price: 539, memory: 10, mandatory: true },
+        rendering: { name: 'Rendering System', price: 270, memory: 8, mandatory: true },
+        physics: { name: 'Physics Engine', price: 189, memory: 3.5, mandatory: true }
     },
     dimensions: {
         '1d': { name: '1D Mode', price: 1, memory: 0.1 },
-        '2d': { name: '2D Mode', price: 800, memory: 6 },
-        '3d': { name: '3D Mode', price: 1200, memory: 8 }
+        '2d': { name: '2D Mode', price: 927, memory: 6 },
+        '3d': { name: '3D Mode', price: 1392, memory: 8 }
     },
-    hourlyRate: 35, // EUR per hour (150 PLN / 4.30)
-    promptRate: 0.25, // EUR per prompt (increased from 0.035)
-    funTimeRate: 0.25, // EUR per minute - premium fun time!
-    energyHourlyRate: 6, // EUR per hour - electricity cost (0.10 EUR/min × 60)
-    totalPrompts: 26 // Updated: added this prompt about AI prompts price change
+    hourlyRate: 40, // USD per hour (150 PLN / 4.30)
+    promptRate: 0.29, // USD per prompt (increased from 0.035)
+    funTimeRate: 0.29, // USD per minute - premium fun time!
+    energyHourlyRate: 7, // USD per hour - electricity cost (0.10 USD/min × 60)
+    totalPrompts: 44 // All user messages across both sessions (26 previous + 18 current)
 };
 
 // Raycasting Configuration
@@ -143,6 +143,15 @@ function init() {
     
     // Reset button
     document.getElementById('resetBtn').addEventListener('click', resetGame);
+    
+    // Buy button - opens GitHub Sponsors with dynamic price
+    document.getElementById('buyBtn').addEventListener('click', function() {
+        const totalText = document.getElementById('totalCost').textContent;
+        // Extract number from "1234.56 USD" format
+        const amount = parseFloat(totalText.replace(' USD', '').replace(',', ''));
+        const sponsorUrl = `https://github.com/sponsors/michalstankiewicz4-cell/sponsorships?amount=${amount}&email_opt_in=off&frequency=one-time&privacy_level=public&sponsor=michalstankiewicz4-cell`;
+        window.open(sponsorUrl, '_blank');
+    });
     
     // Start timer - update every 100ms for smooth price growth
     setInterval(updateTimer, 100);
@@ -796,7 +805,7 @@ function updatePricing() {
         item.innerHTML = `
             <div class="pricing-item-header">
                 <span class="${status}">${statusText} ${module.name}</span>
-                <span class="${status}">${module.price.toFixed(2)} EUR</span>
+                <span class="${status}">${module.price.toFixed(2)} USD</span>
             </div>
             <div class="pricing-item-detail">
                 Memory: ${module.memory.toFixed(2)} KB ${isMandatory ? '(required)' : ''}
@@ -844,13 +853,13 @@ function updatePricing() {
     
     // Update summary
     document.getElementById('memorySize').textContent = `${avgMemoryPerModule} KB/mod - ${totalMemory.toFixed(2)} KB`;
-    document.getElementById('moduleCost').textContent = `${activeModuleCount}/${totalModules} - ${totalModuleCost.toFixed(2)} EUR`;
-    document.getElementById('workTime').textContent = `(${hours.toFixed(2)}h × ${PRICING.hourlyRate} EUR/h) ${timeCost.toFixed(2)} EUR`;
-    document.getElementById('promptCost').textContent = `(${PRICING.totalPrompts} × ${PRICING.promptRate} EUR) ${promptCost.toFixed(2)} EUR`;
-    document.getElementById('energyCost').textContent = `(${energyHours.toFixed(2)}h × ${PRICING.energyHourlyRate} EUR/h) ${energyCost.toFixed(2)} EUR`;
-    document.getElementById('funTime').textContent = `(${funMinutes.toFixed(2)}min × ${PRICING.funTimeRate} EUR/min) ${funTimeCost.toFixed(2)} EUR`;
-    document.getElementById('marginCost').textContent = `${marginCost.toFixed(2)} EUR`;
-    document.getElementById('totalCost').textContent = `${finalTotal.toFixed(2)} EUR`;
+    document.getElementById('moduleCost').textContent = `${activeModuleCount}/${totalModules} - ${totalModuleCost.toFixed(2)} USD`;
+    document.getElementById('workTime').textContent = `(${hours.toFixed(2)}h × ${PRICING.hourlyRate} USD/h) ${timeCost.toFixed(2)} USD`;
+    document.getElementById('promptCost').textContent = `(${PRICING.totalPrompts} × ${PRICING.promptRate} USD) ${promptCost.toFixed(2)} USD`;
+    document.getElementById('energyCost').textContent = `(${energyHours.toFixed(2)}h × ${PRICING.energyHourlyRate} USD/h) ${energyCost.toFixed(2)} USD`;
+    document.getElementById('funTime').textContent = `(${funMinutes.toFixed(2)}min × ${PRICING.funTimeRate} USD/min) ${funTimeCost.toFixed(2)} USD`;
+    document.getElementById('marginCost').textContent = `${marginCost.toFixed(2)} USD`;
+    document.getElementById('totalCost').textContent = `${finalTotal.toFixed(2)} USD`;
 }
 
 
