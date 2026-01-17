@@ -52,7 +52,7 @@ const gameState = {
     targetX: 0,
     targetY: 0,
     particles: [],
-    dimension: '2d', // Current dimension
+    dimension: '1d', // Current dimension
     features: {
         keyboardControl: true,
         mouseControl: true,
