@@ -1,3 +1,6 @@
+Hello, this is my idea for a free game where you select specific modules to progress through levels at the lowest possible cost. Vibecoding only with Copilot and Claude. The game is in JS, and what you'll see is just the beginning, coming soon in 2D and 3D. The project isn't the simple platformer or puzzle game it looks like now; it's just the beginning 😃
+
+# Readme is outdated / readme jest przeterminowane :)
 # Copilot - Game with Pricing System
 
 Interactive game with real-time dynamic pricing system.
