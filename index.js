@@ -124,6 +124,7 @@ function init() {
             checkbox.addEventListener('change', (e) => {
                 gameState.features[feature] = e.target.checked;
                 updatePricing();
+                gameState.canvas.focus(); // Return focus to game
             });
         }
     });
@@ -136,25 +137,30 @@ function init() {
                 if (e.target.checked) {
                     gameState.dimension = e.target.value;
                     updatePricing();
+                    gameState.canvas.focus(); // Return focus to game
                 }
             });
         }
     });
     
     // Reset button
-    document.getElementById('resetBtn').addEventListener('click', resetGame);
+    document.getElementById('resetBtn').addEventListener('click', function() {
+        resetGame();
+        gameState.canvas.focus(); // Return focus to game
+    });
     
-    // Buy button - opens GitHub Sponsors with dynamic price
+    // Buy button - opens GitHub Sponsors with fixed $1
     document.getElementById('buyBtn').addEventListener('click', function() {
-        const totalText = document.getElementById('totalCost').textContent;
-        // Extract number from "1234.56 USD" format
-        const amount = parseFloat(totalText.replace(' USD', '').replace(',', ''));
-        const sponsorUrl = `https://github.com/sponsors/michalstankiewicz4-cell/sponsorships?amount=${amount}&email_opt_in=off&frequency=one-time&privacy_level=public&sponsor=michalstankiewicz4-cell`;
+        const sponsorUrl = `https://github.com/sponsors/michalstankiewicz4-cell/sponsorships?amount=1&email_opt_in=off&frequency=one-time&privacy_level=public&sponsor=michalstankiewicz4-cell`;
         window.open(sponsorUrl, '_blank');
+        gameState.canvas.focus(); // Return focus to game
     });
     
     // Start timer - update every 100ms for smooth price growth
     setInterval(updateTimer, 100);
+    
+    // Focus canvas by default (so arrows control game, not UI)
+    gameState.canvas.focus();
     
     // Start game loop
     updatePricing();
