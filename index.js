@@ -1,26 +1,26 @@
 ﻿// Game Configuration and Pricing
 const PRICING = {
     modules: {
-        keyboardControl: { name: 'Keyboard Control', price: 116, memory: 2 },
+        keyboardControl: { name: 'Keyboard Control', price: 150, memory: 2 },
         mouseControl: { name: 'Mouse Control', price: 93, memory: 1.5 },
         autofollow: { name: 'Autofollow Mouse', price: 93, memory: 1.5 },
-        graphics: { name: 'HD Graphics', price: 349, memory: 10 },
-        colorMode: { name: 'Color Mode', price: 209, memory: 3 },
+        graphics: { name: 'HD Graphics', price: 200, memory: 10 },
+        colorMode: { name: 'Color Mode', price: 60, memory: 3 },
         animations: { name: 'Smooth Animations', price: 186, memory: 3 },
         sounds: { name: 'Sound System', price: 140, memory: 2.5 },
-        particles: { name: 'Particle Effects', price: 279, memory: 4 },
-        tips: { name: 'Tips Display', price: 81, memory: 1.3 },
-        debugConsole: { name: 'Debug Console', price: 70, memory: 1.2 },
+        particles: { name: 'Particle Effects', price: 150, memory: 4 },
+        tips: { name: 'Tips Display', price: 50, memory: 1.3 },
+        debugConsole: { name: 'Debug Console', price: 90, memory: 1.2 },
         healthBar: { name: 'Health Bar', price: 105, memory: 1.5 },
-        walls: { name: 'Walls', price: 350, memory: 3 },
-        wallCollision: { name: 'Wall Collision', price: 450, memory: 3 },
+        walls: { name: 'Walls', price: 80, memory: 3 },
+        wallCollision: { name: 'Wall Collision', price: 180, memory: 3 },
         gameEngine: { name: 'Game Engine (core)', price: 465, memory: 10, mandatory: true },
         rendering: { name: 'Rendering System', price: 233, memory: 8, mandatory: true },
         physics: { name: 'Physics Engine', price: 163, memory: 3.5, mandatory: true }
     },
     dimensions: {
         '1d': { name: '1D Mode', price: 1, memory: 0.1 },
-        '2d': { name: '2D Mode', price: 350, memory: 6 },
+        '2d': { name: '2D Mode', price: 800, memory: 6 },
         '3d': { name: '3D Mode', price: 1200, memory: 8 }
     },
     hourlyRate: 35, // EUR per hour (150 PLN / 4.30)
