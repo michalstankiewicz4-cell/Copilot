@@ -1,4 +1,4 @@
-// Game Configuration and Pricing
+﻿// Game Configuration and Pricing
 const PRICING = {
     modules: {
         keyboardControl: { name: 'Keyboard Control', price: 116, memory: 2 },
@@ -17,6 +17,11 @@ const PRICING = {
         gameEngine: { name: 'Game Engine (core)', price: 465, memory: 10, mandatory: true },
         rendering: { name: 'Rendering System', price: 233, memory: 5, mandatory: true },
         physics: { name: 'Physics Engine', price: 163, memory: 3.5, mandatory: true }
+    },
+    dimensions: {
+        '1d': { name: '1D Mode', price: 1, memory: 0.1 },
+        '2d': { name: '2D Mode', price: 350, memory: 3 },
+        '3d': { name: '3D Mode', price: 1200, memory: 8 }
     },
     hourlyRate: 35, // EUR per hour (150 PLN / 4.30)
     promptRate: 0.25, // EUR per prompt (increased from 0.035)
@@ -47,6 +52,7 @@ const gameState = {
     targetX: 0,
     targetY: 0,
     particles: [],
+    dimension: '2d', // Current dimension
     features: {
         keyboardControl: true,
         mouseControl: true,
@@ -98,6 +104,19 @@ function init() {
             checkbox.addEventListener('change', (e) => {
                 gameState.features[feature] = e.target.checked;
                 updatePricing();
+            });
+        }
+    });
+    
+    // Dimension selector listeners
+    ['dim1d', 'dim2d', 'dim3d'].forEach(dimId => {
+        const radio = document.getElementById(dimId);
+        if (radio) {
+            radio.addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    gameState.dimension = e.target.value;
+                    updatePricing();
+                }
             });
         }
     });
@@ -536,6 +555,11 @@ function updatePricing() {
         
         pricingList.appendChild(item);
     });
+    
+    // Add dimension cost
+    const dimensionCost = PRICING.dimensions[gameState.dimension || '2d'];
+    totalModuleCost += dimensionCost.price;
+    totalMemory += dimensionCost.memory;
     
     // Calculate time cost
     const elapsed = Date.now() - gameState.startTime;
