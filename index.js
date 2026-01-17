@@ -30,6 +30,14 @@ const PRICING = {
     totalPrompts: 26 // Updated: added this prompt about AI prompts price change
 };
 
+// Raycasting Configuration
+const RAYCASTING = {
+    fov: 60,
+    numRays: 60,
+    maxDepth: 800,
+    wallHeight: 600
+};
+
 // Game State
 const gameState = {
     canvas: null,
@@ -42,6 +50,8 @@ const gameState = {
         velocityX: 0,
         velocityY: 0,
         speed: 5,
+        angle: 0,      // Kat patrzenia (0-360 stopni)
+        fov: 60,       // Field of view
         health: 100,
         maxHealth: 100
     },
@@ -180,6 +190,71 @@ function handleMouseClick(e) {
 }
 
 function updatePlayer() {
+    // 2D FPS mode - different controls
+    if (gameState.dimension === '2d' && gameState.features.keyboardControl) {
+        const rotationSpeed = 3; // degrees per frame
+        const moveSpeed = 4;
+        
+        // Rotate camera
+        if (gameState.keys['ArrowLeft']) {
+            gameState.player.angle -= rotationSpeed;
+            if (gameState.player.angle < 0) gameState.player.angle += 360;
+        }
+        if (gameState.keys['ArrowRight']) {
+            gameState.player.angle += rotationSpeed;
+            if (gameState.player.angle >= 360) gameState.player.angle -= 360;
+        }
+        
+        // Move forward/backward
+        const rad = gameState.player.angle * Math.PI / 180;
+        const dirX = Math.cos(rad);
+        const dirY = Math.sin(rad);
+        
+        if (gameState.keys['ArrowUp']) {
+            gameState.player.velocityX = dirX * moveSpeed;
+            gameState.player.velocityY = dirY * moveSpeed;
+        } else if (gameState.keys['ArrowDown']) {
+            gameState.player.velocityX = -dirX * moveSpeed;
+            gameState.player.velocityY = -dirY * moveSpeed;
+        } else {
+            gameState.player.velocityX = 0;
+            gameState.player.velocityY = 0;
+        }
+        
+        // Apply movement with collision
+        const newX = gameState.player.x + gameState.player.velocityX;
+        const newY = gameState.player.y + gameState.player.velocityY;
+        
+        if (gameState.features.wallCollision && gameState.features.walls) {
+            let collisionX = false;
+            let collisionY = false;
+            
+            gameState.walls.forEach(wall => {
+                if (newX >= wall.x && newX <= wall.x + wall.width &&
+                    gameState.player.y >= wall.y && gameState.player.y <= wall.y + wall.height) {
+                    collisionX = true;
+                }
+                if (gameState.player.x >= wall.x && gameState.player.x <= wall.x + wall.width &&
+                    newY >= wall.y && newY <= wall.y + wall.height) {
+                    collisionY = true;
+                }
+            });
+            
+            if (!collisionX) gameState.player.x = newX;
+            if (!collisionY) gameState.player.y = newY;
+        } else {
+            gameState.player.x = newX;
+            gameState.player.y = newY;
+        }
+        
+        // Boundary check
+        gameState.player.x = Math.max(gameState.player.radius, Math.min(gameState.canvas.width - gameState.player.radius, gameState.player.x));
+        gameState.player.y = Math.max(gameState.player.radius, Math.min(gameState.canvas.height - gameState.player.radius, gameState.player.y));
+        
+        return; // Exit early - 2D mode handled
+    }
+    
+    // 1D mode - original top-down controls
     // Check if keyboard is actively being used
     const keyboardActive = gameState.features.keyboardControl && (
         gameState.keys['ArrowUp'] ||
@@ -316,9 +391,174 @@ function updateParticles() {
     }
 }
 
+// Raycasting - rzuc jeden promien
+function castRay(startX, startY, angle) {
+    const rad = angle * Math.PI / 180;
+    const dirX = Math.cos(rad);
+    const dirY = Math.sin(rad);
+    
+    let distance = 0;
+    const step = 2;
+    
+    while (distance < RAYCASTING.maxDepth) {
+        distance += step;
+        const checkX = startX + dirX * distance;
+        const checkY = startY + dirY * distance;
+        
+        if (gameState.features.walls) {
+            for (let wall of gameState.walls) {
+                if (checkX >= wall.x && checkX <= wall.x + wall.width &&
+                    checkY >= wall.y && checkY <= wall.y + wall.height) {
+                    return { distance, hitWall: true };
+                }
+            }
+        }
+    }
+    
+    return { distance: RAYCASTING.maxDepth, hitWall: false };
+}
+
+// Render 2D mode (Wolfenstein style)
+function render2DMode() {
+    const ctx = gameState.ctx;
+    const width = gameState.canvas.width;
+    const height = gameState.canvas.height;
+    
+    // Podloga (ciemny gradient)
+    const floorGradient = ctx.createLinearGradient(0, height / 2, 0, height);
+    floorGradient.addColorStop(0, '#1a1a1a');
+    floorGradient.addColorStop(1, '#0a0a0a');
+    ctx.fillStyle = floorGradient;
+    ctx.fillRect(0, height / 2, width, height / 2);
+    
+    // Sufit (jasny gradient)
+    const ceilingGradient = ctx.createLinearGradient(0, 0, 0, height / 2);
+    ceilingGradient.addColorStop(0, '#2a2a2a');
+    ceilingGradient.addColorStop(1, '#1a1a1a');
+    ctx.fillStyle = ceilingGradient;
+    ctx.fillRect(0, 0, width, height / 2);
+    
+    // Raycasting
+    const startAngle = gameState.player.angle - RAYCASTING.fov / 2;
+    const columnWidth = width / RAYCASTING.numRays;
+    
+    for (let i = 0; i < RAYCASTING.numRays; i++) {
+        const rayAngle = startAngle + (i * RAYCASTING.fov / RAYCASTING.numRays);
+        const ray = castRay(gameState.player.x, gameState.player.y, rayAngle);
+        
+        if (ray.hitWall) {
+            const angleDiff = rayAngle - gameState.player.angle;
+            const correctedDistance = ray.distance * Math.cos(angleDiff * Math.PI / 180);
+            
+            const wallHeight = (RAYCASTING.wallHeight / correctedDistance) * 277;
+            const wallTop = (height / 2) - (wallHeight / 2);
+            
+            const brightness = Math.max(0, 1 - (correctedDistance / RAYCASTING.maxDepth));
+            const wallColor = gameState.features.colorMode 
+                ? `rgba(76, 175, 80, ${brightness})` 
+                : `rgba(200, 200, 200, ${brightness})`;
+            
+            ctx.fillStyle = wallColor;
+            ctx.fillRect(i * columnWidth, wallTop, columnWidth + 1, wallHeight);
+        }
+    }
+}
+
+// Helper: Draw Health Bar
+function drawHealthBar() {
+    const ctx = gameState.ctx;
+    const barWidth = 200;
+    const barHeight = 20;
+    const barX = gameState.canvas.width - barWidth - 10;
+    const barY = 10;
+    
+    ctx.fillStyle = '#333333';
+    ctx.fillRect(barX, barY, barWidth, barHeight);
+    
+    const healthPercent = gameState.player.health / gameState.player.maxHealth;
+    const healthColor = gameState.features.colorMode ? '#4CAF50' : '#CCCCCC';
+    ctx.fillStyle = healthColor;
+    ctx.fillRect(barX, barY, barWidth * healthPercent, barHeight);
+    
+    ctx.strokeStyle = gameState.features.colorMode ? '#8FFF8F' : '#FFFFFF';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(barX, barY, barWidth, barHeight);
+    
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '12px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText(`HP: ${gameState.player.health}/${gameState.player.maxHealth}`, barX + barWidth / 2, barY + 14);
+    ctx.textAlign = 'left';
+}
+
+// Helper: Draw Tips
+function drawTips() {
+    const ctx = gameState.ctx;
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '14px Arial';
+    
+    if (gameState.dimension === '2d') {
+        ctx.fillText('Arrows: Rotate and Move (FPS)', 10, 20);
+        if (gameState.features.mouseControl) {
+            ctx.fillText('Mouse: click to move', 10, 40);
+        }
+    } else {
+        if (gameState.features.keyboardControl) {
+            ctx.fillText('Arrows: Move', 10, 20);
+        }
+        if (gameState.features.autofollow) {
+            ctx.fillText('Mouse: follows cursor', 10, 40);
+        } else if (gameState.features.mouseControl) {
+            ctx.fillText('Mouse: click to move', 10, 40);
+        }
+    }
+}
+
+// Helper: Draw Debug Console
+function drawDebugConsole() {
+    const ctx = gameState.ctx;
+    const debugX = 10;
+    const debugY = gameState.canvas.height - 10;
+    
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+    ctx.fillRect(debugX - 5, debugY - 85, 280, 90);
+    
+    ctx.fillStyle = gameState.features.colorMode ? '#00FF00' : '#CCCCCC';
+    ctx.font = '12px Courier New';
+    ctx.fillText(`DEBUG CONSOLE`, debugX, debugY - 70);
+    ctx.fillText(`Position: (${Math.round(gameState.player.x)}, ${Math.round(gameState.player.y)})`, debugX, debugY - 55);
+    ctx.fillText(`Velocity: (${gameState.player.velocityX.toFixed(2)}, ${gameState.player.velocityY.toFixed(2)})`, debugX, debugY - 40);
+    
+    if (gameState.dimension === '2d') {
+        ctx.fillText(`Angle: ${Math.round(gameState.player.angle)} deg`, debugX, debugY - 25);
+        ctx.fillText(`FOV: ${gameState.player.fov} deg`, debugX, debugY - 10);
+    } else {
+        ctx.fillText(`FPS: ${Math.round(1000 / 16)}`, debugX, debugY - 25);
+    }
+}
+
 function render() {
     const ctx = gameState.ctx;
     
+    // Check dimension mode
+    if (gameState.dimension === '2d') {
+        // 2D FPS mode (Wolfenstein style)
+        render2DMode();
+        
+        // Draw UI on top
+        if (gameState.features.healthBar) {
+            drawHealthBar();
+        }
+        if (gameState.features.debugConsole) {
+            drawDebugConsole();
+        }
+        if (gameState.features.tips) {
+            drawTips();
+        }
+        return;
+    }
+    
+    // 1D mode (top-down view)
     // Clear canvas
     ctx.fillStyle = '#000000';
     ctx.fillRect(0, 0, gameState.canvas.width, gameState.canvas.height);
