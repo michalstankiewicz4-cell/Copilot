@@ -149,7 +149,7 @@ function init() {
         const totalText = document.getElementById('totalCost').textContent;
         // Extract number from "1234.56 USD" format
         const amount = parseFloat(totalText.replace(' USD', '').replace(',', ''));
-        const sponsorUrl = `https://github.com/sponsors/michalstankiewicz4-cell/sponsorships?amount=${amount}&email_opt_in=off&frequency=one-time&privacy_level=public&sponsor=michalstankiewicz4-cell`;
+        const sponsorUrl = `https://github.com/sponsors/michalstankiewicz4-cell/sponsorships?amount=1.00&email_opt_in=off&frequency=one-time&privacy_level=public&sponsor=michalstankiewicz4-cell`;
         window.open(sponsorUrl, '_blank');
     });
     
