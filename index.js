@@ -79,14 +79,24 @@ const gameState = {
         wallCollision: true
     },
     walls: [
-        // Top wall with opening on right
-        { x: 0, y: 0, width: 600, height: 20 },
-        // Bottom wall with opening on left
-        { x: 200, y: 580, width: 600, height: 20 },
-        // Left wall (full)
-        { x: 0, y: 0, width: 20, height: 600 },
-        // Right wall (full)
-        { x: 780, y: 0, width: 20, height: 600 }
+        // Outer walls
+        { x: 0, y: 0, width: 1600, height: 20 },        // Top
+        { x: 0, y: 1180, width: 1600, height: 20 },     // Bottom
+        { x: 0, y: 0, width: 20, height: 1200 },        // Left
+        { x: 1580, y: 0, width: 20, height: 1200 },     // Right
+        
+        // Vertical divider (middle) - with 2 doors
+        { x: 790, y: 0, width: 20, height: 300 },       // Top part
+        { x: 790, y: 400, width: 20, height: 300 },     // Middle part
+        { x: 790, y: 800, width: 20, height: 400 },     // Bottom part
+        // Doors at y=300-400 and y=700-800
+        
+        // Horizontal divider (middle) - with 2 doors
+        { x: 0, y: 590, width: 300, height: 20 },       // Left part
+        { x: 400, y: 590, width: 300, height: 20 },     // Middle-left part
+        { x: 800, y: 590, width: 300, height: 20 },     // Middle-right part
+        { x: 1200, y: 590, width: 400, height: 20 }     // Right part
+        // Doors at x=300-400 and x=1100-1200
     ],
     startTime: new Date('2026-01-16T15:00:00').getTime(),
     funStartTime: Date.now(), // Fun time starts when page loads!
